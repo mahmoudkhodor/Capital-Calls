@@ -4,6 +4,9 @@ const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
   : null;
 
+// Feature flag - set to 'true' to enable emails
+const EMAIL_ENABLED = process.env.EMAIL_ENABLED === 'true';
+
 const FROM_EMAIL = process.env.FROM_EMAIL || 'Capital Call <onboarding@resend.dev>';
 const APP_URL = process.env.NEXTAUTH_URL || 'https://capital-calls-2exq.vercel.app';
 
@@ -16,6 +19,12 @@ export async function sendEmail({
   subject: string;
   html: string;
 }) {
+  // Skip if emails are disabled via feature flag
+  if (!EMAIL_ENABLED) {
+    console.log('📧 Email (disabled):', { to, subject });
+    return { success: true, disabled: true };
+  }
+
   // Skip if no Resend API key
   if (!resend) {
     console.log('📧 Email (mock):', { to, subject });

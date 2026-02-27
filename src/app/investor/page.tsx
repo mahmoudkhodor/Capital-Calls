@@ -52,8 +52,6 @@ export default async function InvestorDashboard() {
             <div className="flex items-center gap-8">
               <Link href="/investor" className="flex items-center gap-2">
                 <Logo size="sm" />
-                  
-                </div>
                 <span className="text-white font-semibold">Capital Call</span>
                 <span className="px-2 py-0.5 rounded text-xs bg-accent/20 text-accent">Investor</span>
               </Link>

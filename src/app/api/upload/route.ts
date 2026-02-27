@@ -16,14 +16,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Check if blob token is configured
-    if (!process.env.BLOB_READ_WRITE_TOKEN) {
-      console.error('BLOB_READ_WRITE_TOKEN is not set');
-      return NextResponse.json(
-        { error: 'File storage not configured. Please contact admin.' },
-        { status: 500 }
-      );
-    }
+    // Debug: log if token exists (not the value)
+    const hasToken = !!process.env.BLOB_READ_WRITE_TOKEN;
+    console.log('Blob token configured:', hasToken);
 
     // Generate unique filename
     const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
@@ -32,6 +27,8 @@ export async function POST(req: NextRequest) {
     const blob = await put(filename, file, {
       access: 'public',
     });
+
+    console.log('Blob uploaded:', blob.url);
 
     // Save to database
     const document = await prisma.startupDocument.create({

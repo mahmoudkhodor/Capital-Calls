@@ -6,9 +6,26 @@ export async function GET() {
     select: {
       id: true,
       companyName: true,
+      ownerUserId: true,
       _count: { select: { documents: true } },
-      documents: { select: { id: true, filename: true, url: true, type: true } },
     },
   });
-  return NextResponse.json(startups);
+
+  const users = await prisma.user.findMany({
+    select: {
+      id: true,
+      email: true,
+      role: true,
+    },
+  });
+
+  return NextResponse.json({
+    startups,
+    users,
+    mapping: startups.map(s => ({
+      companyName: s.companyName,
+      ownerUserId: s.ownerUserId,
+      ownerEmail: users.find(u => u.id === s.ownerUserId)?.email || 'NOT FOUND'
+    }))
+  });
 }

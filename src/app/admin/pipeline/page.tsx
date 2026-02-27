@@ -11,6 +11,7 @@ type Startup = {
   sector: string | null;
   stage: string | null;
   score: number | null;
+  status: string;
   createdAt: string;
 };
 

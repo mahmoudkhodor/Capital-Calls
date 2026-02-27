@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
+import { sendNewApplicationNotification } from '@/lib/email';
 
 export async function POST(req: NextRequest) {
   try {
@@ -64,6 +65,19 @@ export async function POST(req: NextRequest) {
         startup: true,
       },
     });
+
+    // Send notification to admin about new application
+    const admin = await prisma.user.findFirst({
+      where: { role: 'ADMIN' },
+      select: { email: true },
+    });
+    if (admin?.email) {
+      await sendNewApplicationNotification({
+        to: admin.email,
+        companyName: startupData.companyName,
+        founderName: account.name,
+      });
+    }
 
     return NextResponse.json({ success: true, userId: user.id, startupId: user.startup?.id });
   } catch (error) {

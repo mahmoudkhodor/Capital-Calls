@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { sendStartupStatusChange, sendNewApplicationNotification } from '@/lib/email';
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -59,6 +60,21 @@ export async function PATCH(req: NextRequest) {
         meta: JSON.stringify(data),
       },
     });
+
+    // Send email notification if status changed
+    if (data.status) {
+      const owner = await prisma.user.findUnique({
+        where: { id: startup.ownerUserId },
+        select: { email: true },
+      });
+      if (owner?.email) {
+        await sendStartupStatusChange({
+          to: owner.email,
+          companyName: startup.companyName,
+          newStatus: data.status,
+        });
+      }
+    }
 
     return NextResponse.json(startup);
   } catch (error) {

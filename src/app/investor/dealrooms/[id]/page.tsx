@@ -88,31 +88,17 @@ export default function InvestorDealRoom() {
     }
   };
 
+  const defaultFields = [
+    'companyName', 'website', 'stage', 'sector',
+    'tractionHighlights', 'problem', 'solution', 'founders', 'targetAmount',
+  ];
+
   const getVisibleFields = () => {
-    if (!dealRoom?.visibilityConfigs[0]) {
-      return defaultFields;
-    }
+    if (!dealRoom?.visibilityConfigs[0]) return defaultFields;
     try {
       return JSON.parse(dealRoom.visibilityConfigs[0].visibleFields);
-    } catch {
-      return defaultFields;
-    }
+    } catch { return defaultFields; }
   };
-
-  const defaultFields = [
-    'companyName',
-    'website',
-    'hq',
-    'stage',
-    'sector',
-    'tractionHighlights',
-    'problem',
-    'solution',
-    'differentiation',
-    'founders',
-    'roundType',
-    'targetAmount',
-  ];
 
   const visibleFields = getVisibleFields();
 
@@ -125,33 +111,55 @@ export default function InvestorDealRoom() {
     }) || [];
 
   if (status === 'loading' || !dealRoom) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="min-h-screen bg-dark-950 flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <Link href="/investor" className="text-gray-600 hover:text-gray-900">
-              &larr; Back
+    <div className="min-h-screen bg-dark-950">
+      {/* Header */}
+      <header className="border-b border-white/5 bg-dark-900/50 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container-custom">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-8">
+              <Link href="/investor" className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">C</span>
+                </div>
+                <span className="text-white font-semibold">Capital Call</span>
+                <span className="px-2 py-0.5 rounded text-xs bg-accent/20 text-accent">Investor</span>
+              </Link>
+            </div>
+            <Link href="/api/auth/signout" className="btn-ghost text-dark-300 hover:text-white">
+              Sign Out
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900">{dealRoom.name}</h1>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
-        {dealRoom.description && (
-          <p className="text-gray-600 mb-6">{dealRoom.description}</p>
-        )}
+      <div className="container-custom py-8">
+        {/* Page Header */}
+        <div className="flex items-center gap-4 mb-8">
+          <Link href="/investor" className="btn-ghost text-dark-300 hover:text-white">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </Link>
+          <div>
+            <h1 className="text-3xl font-bold text-white">{dealRoom.name}</h1>
+            <p className="text-dark-400 mt-1">{dealRoom.description || 'Browse curated investment opportunities'}</p>
+          </div>
+        </div>
 
         {/* Filters */}
-        <div className="flex gap-4 mb-6">
+        <div className="flex flex-wrap gap-4 mb-6">
           <select
             value={filter.sector}
             onChange={(e) => setFilter({ ...filter, sector: e.target.value })}
-            className="px-4 py-2 border rounded-lg"
+            className="input bg-dark-900/50 border-dark-700 text-white"
           >
             <option value="">All Sectors</option>
             <option value="fintech">Fintech</option>
@@ -163,7 +171,7 @@ export default function InvestorDealRoom() {
           <select
             value={filter.stage}
             onChange={(e) => setFilter({ ...filter, stage: e.target.value })}
-            className="px-4 py-2 border rounded-lg"
+            className="input bg-dark-900/50 border-dark-700 text-white"
           >
             <option value="">All Stages</option>
             <option value="idea">Idea</option>
@@ -174,72 +182,59 @@ export default function InvestorDealRoom() {
         </div>
 
         {/* Startups Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredStartups.map((startup) => {
-            const interestStatus = interests[startup.id];
-            return (
-              <div key={startup.id} className="bg-white p-6 rounded-xl border">
-                <h3 className="font-semibold text-lg text-gray-900">
-                  {startup.companyName}
-                </h3>
-                <p className="text-gray-600 text-sm">
-                  {startup.stage} • {startup.sector}
-                </p>
-
-                {visibleFields.includes('tractionHighlights') && startup.tractionHighlights && (
-                  <p className="text-gray-600 text-sm mt-3">{startup.tractionHighlights}</p>
-                )}
-
-                {visibleFields.includes('problem') && startup.problem && (
-                  <div className="mt-3">
-                    <p className="text-xs font-medium text-gray-500 uppercase">Problem</p>
-                    <p className="text-sm text-gray-700 line-clamp-2">{startup.problem}</p>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredStartups.length === 0 ? (
+            <div className="col-span-full text-center py-12">
+              <p className="text-dark-500">No startups in this deal room yet.</p>
+            </div>
+          ) : (
+            filteredStartups.map((startup) => {
+              const interestStatus = interests[startup.id];
+              return (
+                <div key={startup.id} className="card bg-dark-900/50 border-dark-800 p-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-lg font-semibold text-white">{startup.companyName}</h3>
+                    <span className="badge bg-primary-500/10 text-primary-400 border border-primary-500/20">
+                      {startup.stage || 'N/A'}
+                    </span>
                   </div>
-                )}
 
-                {visibleFields.includes('solution') && startup.solution && (
-                  <div className="mt-2">
-                    <p className="text-xs font-medium text-gray-500 uppercase">Solution</p>
-                    <p className="text-sm text-gray-700 line-clamp-2">{startup.solution}</p>
+                  <div className="space-y-2 text-sm mb-4">
+                    {startup.sector && (
+                      <p className="text-dark-400"><span className="text-dark-500">Sector:</span> {startup.sector}</p>
+                    )}
+                    {startup.targetAmount && (
+                      <p className="text-dark-400"><span className="text-dark-500">Target:</span> {startup.targetAmount}</p>
+                    )}
+                    {startup.tractionHighlights && (
+                      <p className="text-dark-400 line-clamp-2">{startup.tractionHighlights}</p>
+                    )}
                   </div>
-                )}
 
-                {visibleFields.includes('targetAmount') && startup.targetAmount && (
-                  <p className="text-sm text-gray-600 mt-3">
-                    Target: {startup.targetAmount}
-                  </p>
-                )}
-
-                <div className="mt-4 pt-4 border-t flex gap-2">
                   {interestStatus ? (
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        interestStatus === 'APPROVED'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-yellow-100 text-yellow-800'
-                      }`}
-                    >
-                      {interestStatus}
+                    <span className={`badge w-full justify-center ${
+                      interestStatus === 'APPROVED'
+                        ? 'bg-green-500/10 text-green-400 border border-green-500/20'
+                        : interestStatus === 'REQUESTED'
+                        ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
+                        : 'bg-red-500/10 text-red-400 border border-red-500/20'
+                    }`}>
+                      {interestStatus === 'APPROVED' ? '✓ Intro Approved' :
+                       interestStatus === 'REQUESTED' ? '⏳ Intro Requested' : '✕ Intro Declined'}
                     </span>
                   ) : (
                     <button
                       onClick={() => requestIntro(startup.id)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-lg text-sm"
+                      className="btn-primary w-full"
                     >
                       Request Intro
                     </button>
                   )}
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
-
-        {filteredStartups.length === 0 && (
-          <div className="text-center text-gray-500 py-12">
-            No startups found in this deal room.
-          </div>
-        )}
       </div>
     </div>
   );

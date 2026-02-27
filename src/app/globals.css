@@ -51,25 +51,54 @@
            transition-all duration-200 ease-in-out;
   }
 
+  /* Dark mode ghost button */
+  .dark .btn-ghost {
+    @apply text-dark-400 hover:bg-dark-800 hover:text-white;
+  }
+
   .card {
     @apply bg-white rounded-premium-lg border border-dark-100
            shadow-premium hover:shadow-premium-lg
            transition-all duration-300 ease-in-out;
   }
 
+  /* Dark mode cards */
+  .dark .card {
+    @apply bg-dark-900/50 border-dark-800;
+  }
+
   .card-static {
     @apply bg-white rounded-premium-lg border border-dark-100 shadow-premium;
   }
 
+  /* Dark mode static cards */
+  .dark .card-static {
+    @apply bg-dark-900 border-dark-800;
+  }
+
   .input {
-    @apply w-full px-4 py-3 text-dark-900 bg-white border border-dark-200 rounded-lg
+    @apply w-full px-4 py-3 bg-white border border-dark-200 rounded-lg
            placeholder:text-dark-400
            focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500
            transition-all duration-200;
   }
 
+  /* Dark mode inputs */
+  .dark .input {
+    @apply bg-dark-900/50 border-dark-700 text-white placeholder-dark-500;
+  }
+
+  .dark .input:focus {
+    @apply bg-dark-900/80 border-primary-500;
+  }
+
   .label {
     @apply block text-sm font-medium text-dark-700 mb-1.5;
+  }
+
+  /* Dark mode label */
+  .dark .label {
+    @apply text-dark-300;
   }
 
   .badge {

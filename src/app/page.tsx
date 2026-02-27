@@ -17,9 +17,11 @@ export default async function Home() {
     <div className="min-h-screen bg-dark-950">
       {/* Animated background */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-600/20 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-accent/20 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl" />
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary-600/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+        {/* Grid pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_11px)] bg-[size:50px,transparent_px_50px]" />
       </div>
 
       {/* Navigation */}
@@ -57,18 +59,18 @@ export default async function Home() {
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-400 text-sm font-medium mb-8 animate-fade-in">
               <span className="w-2 h-2 rounded-full bg-primary-500 animate-pulse" />
-              Trusted by leading investors
+              The future of startup fundraising
             </div>
 
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 animate-slide-up tracking-tight">
-              Where <span className="gradient-text">Startups</span> Meet
+              Where <span className="gradient-text">Visionary</span> Founders
               <br />
-              Their Investors
+              Meet Their Investors
             </h1>
 
             <p className="text-xl text-dark-400 mb-10 max-w-2xl mx-auto animate-slide-up animation-delay-100">
-              The premier dealroom platform connecting visionary founders with strategic investors.
-              Streamlined, elegant, and built for deals that matter.
+              Connect with the right investors through our curated dealroom platform.
+              Every connection is meaningful, every deal is crafted for success.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up animation-delay-200">
@@ -100,34 +102,34 @@ export default async function Home() {
               {
                 icon: (
                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 ),
-                title: "For Startups",
-                description: "Submit your application, upload your pitch deck, and track your status in real-time. Get discovered by quality investors.",
+                title: "For Founders",
+                description: "Apply in minutes, not hours. Track your application status in real-time and connect directly with investors who align with your vision.",
               },
               {
                 icon: (
                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
                 ),
                 title: "For Investors",
-                description: "Access curated deal rooms, express interest, and request introductions to promising startups that match your thesis.",
+                description: "Access curated opportunities, discover hidden gems, and make data-driven investment decisions with our intelligent matching system.",
               },
               {
                 icon: (
                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 ),
-                title: "Admin Control",
-                description: "Manage applications, create deal rooms, control visibility, and facilitate introductions with powerful admin tools.",
+                title: "Community",
+                description: "Join a network of founders and investors who trust Capital Call to facilitate meaningful connections that drive innovation.",
               },
             ].map((feature, i) => (
               <div
                 key={i}
-                className="card p-8 group hover:border-primary-500/30 hover:shadow-lg hover:shadow-primary-500/10 transition-all duration-500"
+                className="card bg-dark-900/50 border-dark-800 p-8 group hover:border-primary-500/30 hover:shadow-lg hover:shadow-primary-500/10 transition-all duration-500"
                 style={{ animationDelay: `${i * 100}ms` }}
               >
                 <div className="relative">
@@ -149,12 +151,13 @@ export default async function Home() {
         <div className="container-custom">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
-              { value: "$2B+", label: "Capital Deployed" },
-              { value: "500+", label: "Startups Funded" },
-              { value: "200+", label: "Active Investors" },
-              { value: "95%", label: "Match Rate" },
+              { value: "$2B+", label: "Capital Deployed", icon: "💰" },
+              { value: "500+", label: "Startups Funded", icon: "🚀" },
+              { value: "200+", label: "Active Investors", icon: "👥" },
+              { value: "95%", label: "Match Rate", icon: "🎯" },
             ].map((stat, i) => (
               <div key={i} className="text-center">
+                <div className="text-4xl mb-2">{stat.icon}</div>
                 <div className="text-3xl md:text-4xl font-bold text-white mb-2">{stat.value}</div>
                 <div className="text-dark-400">{stat.label}</div>
               </div>

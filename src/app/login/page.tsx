@@ -63,21 +63,25 @@ export default function LoginPage() {
 
       if (result?.error) {
         setError('Invalid email or password');
+        setLoading(false);
       } else if (result?.ok) {
-        // Redirect based on role
-        const response = await fetch('/api/auth/session');
-        const session = await response.json();
-        if (session?.user?.role === 'ADMIN') {
-          router.push('/admin');
-        } else if (session?.user?.role === 'STARTUP') {
-          router.push('/startup');
-        } else if (session?.user?.role === 'INVESTOR') {
-          router.push('/investor');
-        } else {
-          router.push('/admin');
-        }
+        // Wait a bit for session to update, then redirect
+        setTimeout(async () => {
+          const res = await fetch('/api/auth/session');
+          const session = await res.json();
+          if (session?.user?.role === 'ADMIN') {
+            router.push('/admin');
+          } else if (session?.user?.role === 'STARTUP') {
+            router.push('/startup');
+          } else if (session?.user?.role === 'INVESTOR') {
+            router.push('/investor');
+          } else {
+            router.push('/admin');
+          }
+        }, 100);
       } else {
         setError('Login failed. Please try again.');
+        setLoading(false);
       }
     } catch (err) {
       setError('An error occurred. Please try again.');
@@ -122,7 +126,7 @@ export default function LoginPage() {
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className={`input bg-dark-900/50 border-dark-700 text-white placeholder-dark-500 focus:ring-primary-500 ${
+                className={`input bg-dark-900/50 border-dark-700 focus:ring-primary-500 ${
                   errors.email ? 'border-red-500' : ''
                 }`}
                 placeholder="you@example.com"
@@ -140,7 +144,7 @@ export default function LoginPage() {
                 type="password"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className={`input bg-dark-900/50 border-dark-700 text-white placeholder-dark-500 focus:ring-primary-500 ${
+                className={`input bg-dark-900/50 border-dark-700 focus:ring-primary-500 ${
                   errors.password ? 'border-red-500' : ''
                 }`}
                 placeholder="Enter your password"

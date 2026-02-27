@@ -56,36 +56,70 @@ export default function AdminIntros() {
   );
 
   if (status === 'loading') {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="min-h-screen bg-dark-950 flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <Link href="/admin" className="text-gray-600 hover:text-gray-900">
-              &larr; Back
+    <div className="min-h-screen bg-dark-950">
+      {/* Header */}
+      <header className="border-b border-white/5 bg-dark-900/50 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container-custom">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-8">
+              <Link href="/admin" className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">C</span>
+                </div>
+                <span className="text-white font-semibold">Capital Call</span>
+                <span className="px-2 py-0.5 rounded text-xs bg-primary-500/20 text-primary-400">Admin</span>
+              </Link>
+              <nav className="hidden md:flex items-center gap-6">
+                <Link href="/admin" className="text-dark-400 hover:text-white transition-colors">Dashboard</Link>
+                <Link href="/admin/analytics" className="text-dark-400 hover:text-white transition-colors">Analytics</Link>
+                <Link href="/admin/pipeline" className="text-dark-400 hover:text-white transition-colors">Pipeline</Link>
+                <Link href="/admin/startups" className="text-dark-400 hover:text-white transition-colors">Startups</Link>
+                <Link href="/admin/dealrooms" className="text-dark-400 hover:text-white transition-colors">Deal Rooms</Link>
+                <Link href="/admin/intros" className="text-white font-medium">Intros</Link>
+              </nav>
+            </div>
+            <Link href="/api/auth/signout" className="btn-ghost text-dark-300 hover:text-white">
+              Sign Out
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900">Intro Requests</h1>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container-custom py-8">
+        {/* Page Header */}
+        <div className="flex items-center gap-4 mb-8">
+          <Link href="/admin" className="btn-ghost text-dark-300 hover:text-white">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </Link>
+          <div>
+            <h1 className="text-3xl font-bold text-white">Intro Requests</h1>
+            <p className="text-dark-400 mt-1">Review and manage investor introduction requests</p>
+          </div>
+        </div>
+
         {/* Filters */}
         <div className="flex gap-2 mb-6">
-          {['REQUESTED', 'APPROVED', 'DECLINED', 'ALL'].map((status) => (
+          {['REQUESTED', 'APPROVED', 'DECLINED', 'ALL'].map((statusFilter) => (
             <button
-              key={status}
-              onClick={() => setFilter(status)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium ${
-                filter === status
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-white text-gray-600 border hover:bg-gray-50'
+              key={statusFilter}
+              onClick={() => setFilter(statusFilter)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                filter === statusFilter
+                  ? 'bg-primary-600 text-white'
+                  : 'bg-dark-800 text-dark-400 border border-dark-700 hover:border-primary-500/50'
               }`}
             >
-              {status}
+              {statusFilter}
             </button>
           ))}
         </div>
@@ -94,58 +128,56 @@ export default function AdminIntros() {
         <div className="space-y-4">
           {filteredIntros.length > 0 ? (
             filteredIntros.map((intro) => (
-              <div key={intro.id} className="bg-white p-6 rounded-xl border">
-                <div className="flex justify-between items-start">
+              <div key={intro.id} className="card bg-dark-900/50 border-dark-800 p-6">
+                <div className="flex justify-between items-start gap-4">
                   <div>
-                    <h3 className="font-semibold text-lg text-gray-900">
+                    <h3 className="font-semibold text-lg text-white">
                       {intro.startup.companyName}
                     </h3>
-                    <p className="text-gray-600 text-sm">
+                    <p className="text-dark-400 text-sm">
                       {intro.startup.stage} • {intro.startup.sector}
                     </p>
-                    <div className="mt-2 text-sm text-gray-500">
-                      <p>
-                        <span className="font-medium">Investor:</span> {intro.investor.name || intro.investor.email}
+                    <div className="mt-3 text-sm">
+                      <p className="text-dark-500">
+                        <span className="text-dark-400 font-medium">Investor:</span> {intro.investor.name || intro.investor.email}
                       </p>
                       {intro.dealRoom && (
-                        <p>
-                          <span className="font-medium">Deal Room:</span> {intro.dealRoom.name}
+                        <p className="text-dark-500">
+                          <span className="text-dark-400 font-medium">Deal Room:</span> {intro.dealRoom.name}
                         </p>
                       )}
                       {intro.note && (
-                        <p className="mt-2 italic">&quot;{intro.note}&quot;</p>
+                        <p className="mt-2 text-dark-400 italic">&quot;{intro.note}&quot;</p>
                       )}
                     </div>
-                    <p className="text-gray-400 text-xs mt-2">
+                    <p className="text-dark-600 text-xs mt-3">
                       {new Date(intro.createdAt).toLocaleString()}
                     </p>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 flex-shrink-0">
                     {intro.status === 'REQUESTED' && (
                       <>
                         <button
                           onClick={() => handleAction(intro.id, 'APPROVE')}
-                          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm"
+                          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
                         >
                           Approve
                         </button>
                         <button
                           onClick={() => handleAction(intro.id, 'DECLINE')}
-                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm"
+                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
                         >
                           Decline
                         </button>
                       </>
                     )}
-                    <span
-                      className={`px-3 py-2 rounded-full text-xs font-medium ${
-                        intro.status === 'APPROVED'
-                          ? 'bg-green-100 text-green-800'
-                          : intro.status === 'DECLINED'
-                          ? 'bg-red-100 text-red-800'
-                          : 'bg-yellow-100 text-yellow-800'
-                      }`}
-                    >
+                    <span className={`badge ${
+                      intro.status === 'APPROVED'
+                        ? 'bg-green-500/10 text-green-400 border border-green-500/20'
+                        : intro.status === 'DECLINED'
+                        ? 'bg-red-500/10 text-red-400 border border-red-500/20'
+                        : 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
+                    }`}>
                       {intro.status}
                     </span>
                   </div>
@@ -153,8 +185,8 @@ export default function AdminIntros() {
               </div>
             ))
           ) : (
-            <div className="bg-white p-6 rounded-xl border text-center text-gray-500">
-              No intro requests found.
+            <div className="text-center py-12">
+              <p className="text-dark-500">No intro requests found</p>
             </div>
           )}
         </div>

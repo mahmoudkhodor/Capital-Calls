@@ -30,15 +30,6 @@ type Analytics = {
   };
 };
 
-const statusColors: Record<string, string> = {
-  DRAFT: 'bg-gray-100 text-gray-800',
-  SUBMITTED: 'bg-yellow-100 text-yellow-800',
-  IN_REVIEW: 'bg-blue-100 text-blue-800',
-  FOLLOW_UP: 'bg-orange-100 text-orange-800',
-  SHORTLISTED: 'bg-green-100 text-green-800',
-  NOT_MOVING_FORWARD: 'bg-red-100 text-red-800',
-};
-
 export default function AnalyticsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -64,8 +55,8 @@ export default function AnalyticsPage() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-gray-600">Loading analytics...</div>
+      <div className="min-h-screen bg-dark-950 flex items-center justify-center">
+        <div className="text-white">Loading analytics...</div>
       </div>
     );
   }
@@ -73,128 +64,125 @@ export default function AnalyticsPage() {
   if (!analytics) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-dark-950">
       {/* Header */}
-      <header className="bg-white shadow">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <Link href="/admin" className="text-gray-600 hover:text-gray-900">
-              &larr; Back
+      <header className="border-b border-white/5 bg-dark-900/50 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container-custom">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-8">
+              <Link href="/admin" className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">C</span>
+                </div>
+                <span className="text-white font-semibold">Capital Call</span>
+                <span className="px-2 py-0.5 rounded text-xs bg-primary-500/20 text-primary-400">Admin</span>
+              </Link>
+              <nav className="hidden md:flex items-center gap-6">
+                <Link href="/admin" className="text-dark-400 hover:text-white transition-colors">Dashboard</Link>
+                <Link href="/admin/analytics" className="text-white font-medium">Analytics</Link>
+                <Link href="/admin/pipeline" className="text-dark-400 hover:text-white transition-colors">Pipeline</Link>
+                <Link href="/admin/startups" className="text-dark-400 hover:text-white transition-colors">Startups</Link>
+                <Link href="/admin/dealrooms" className="text-dark-400 hover:text-white transition-colors">Deal Rooms</Link>
+                <Link href="/admin/intros" className="text-dark-400 hover:text-white transition-colors">Intros</Link>
+              </nav>
+            </div>
+            <Link href="/api/auth/signout" className="btn-ghost text-dark-300 hover:text-white">
+              Sign Out
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900">Analytics</h1>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
-        {/* Overview Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-          <div className="bg-white p-4 rounded-xl shadow-sm border">
-            <div className="text-2xl font-bold text-blue-600">{analytics.overview.totalStartups}</div>
-            <div className="text-sm text-gray-600">Total Startups</div>
-          </div>
-          <div className="bg-white p-4 rounded-xl shadow-sm border">
-            <div className="text-2xl font-bold text-green-600">{analytics.overview.totalInvestors}</div>
-            <div className="text-sm text-gray-600">Investors</div>
-          </div>
-          <div className="bg-white p-4 rounded-xl shadow-sm border">
-            <div className="text-2xl font-bold text-purple-600">{analytics.overview.totalDealRooms}</div>
-            <div className="text-sm text-gray-600">Deal Rooms</div>
-          </div>
-          <div className="bg-white p-4 rounded-xl shadow-sm border">
-            <div className="text-2xl font-bold text-yellow-600">{analytics.overview.recentApplications}</div>
-            <div className="text-sm text-gray-600">Last 30 Days</div>
-          </div>
-          <div className="bg-white p-4 rounded-xl shadow-sm border">
-            <div className="text-2xl font-bold text-indigo-600">{analytics.overview.avgScore}</div>
-            <div className="text-sm text-gray-600">Avg Score</div>
-          </div>
-          <div className="bg-white p-4 rounded-xl shadow-sm border">
-            <div className="text-2xl font-bold text-orange-600">{analytics.overview.conversionRate}%</div>
-            <div className="text-sm text-gray-600">Conversion</div>
+      <div className="container-custom py-8">
+        {/* Page Header */}
+        <div className="flex items-center gap-4 mb-8">
+          <Link href="/admin" className="btn-ghost text-dark-300 hover:text-white">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </Link>
+          <div>
+            <h1 className="text-3xl font-bold text-white">Analytics</h1>
+            <p className="text-dark-400 mt-1">Track your dealroom performance</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Pipeline Funnel */}
-          <div className="bg-white p-6 rounded-xl shadow-sm border">
-            <h2 className="text-lg font-semibold mb-4">Pipeline Funnel</h2>
-            <div className="space-y-3">
-              {[
-                { label: 'Submitted', value: analytics.funnel.submitted, color: 'bg-yellow-500' },
-                { label: 'In Review', value: analytics.funnel.inReview, color: 'bg-blue-500' },
-                { label: 'Shortlisted', value: analytics.funnel.shortlisted, color: 'bg-green-500' },
-                { label: 'Not Moving', value: analytics.funnel.notMoving, color: 'bg-red-500' },
-              ].map(item => {
-                const percentage = analytics.overview.totalStartups > 0
-                  ? Math.round((item.value / analytics.overview.totalStartups) * 100)
-                  : 0;
-                return (
-                  <div key={item.label}>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-gray-600">{item.label}</span>
-                      <span className="font-medium">{item.value} ({percentage}%)</span>
-                    </div>
-                    <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full ${item.color} rounded-full transition-all`}
-                        style={{ width: `${percentage}%` }}
-                      />
-                    </div>
+        {/* Overview Stats */}
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          {[
+            { label: 'Total Startups', value: analytics.overview.totalStartups, icon: '🏢' },
+            { label: 'Active Investors', value: analytics.overview.totalInvestors, icon: '👥' },
+            { label: 'Deal Rooms', value: analytics.overview.totalDealRooms, icon: '📁' },
+            { label: 'Recent Applications', value: analytics.overview.recentApplications, icon: '📝' },
+            { label: 'Avg Score', value: analytics.overview.avgScore, icon: '⭐' },
+            { label: 'Conversion Rate', value: `${analytics.overview.conversionRate}%`, icon: '📈' },
+          ].map((stat, i) => (
+            <div key={stat.label} className="card p-6 bg-dark-900/50 border-dark-800">
+              <div className="text-3xl mb-2">{stat.icon}</div>
+              <div className="text-2xl font-bold text-white">{stat.value}</div>
+              <div className="text-dark-400 text-sm">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Funnel */}
+        <div className="card bg-dark-900/50 border-dark-800 p-6 mb-8">
+          <h2 className="text-xl font-semibold text-white mb-6">Application Funnel</h2>
+          <div className="space-y-4">
+            {[
+              { label: 'Submitted', value: analytics.funnel.submitted, color: 'bg-yellow-500' },
+              { label: 'In Review', value: analytics.funnel.inReview, color: 'bg-blue-500' },
+              { label: 'Shortlisted', value: analytics.funnel.shortlisted, color: 'bg-green-500' },
+              { label: 'Not Moving', value: analytics.funnel.notMoving, color: 'bg-red-500' },
+            ].map((item) => {
+              const percentage = analytics.funnel.submitted > 0 ? (item.value / analytics.funnel.submitted) * 100 : 0;
+              return (
+                <div key={item.label}>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-dark-400">{item.label}</span>
+                    <span className="text-white">{item.value}</span>
                   </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Status Distribution */}
-          <div className="bg-white p-6 rounded-xl shadow-sm border">
-            <h2 className="text-lg font-semibold mb-4">By Status</h2>
-            <div className="space-y-2">
-              {analytics.byStatus.map(item => (
-                <div key={item.status} className="flex items-center justify-between p-2 rounded-lg bg-gray-50">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[item.status] || 'bg-gray-100'}`}>
-                    {item.status.replace('_', ' ')}
-                  </span>
-                  <span className="font-semibold">{item._count.status}</span>
+                  <div className="h-2 bg-dark-800 rounded-full overflow-hidden">
+                    <div className={`h-full ${item.color} rounded-full`} style={{ width: `${percentage}%` }} />
+                  </div>
                 </div>
-              ))}
-            </div>
+              );
+            })}
           </div>
+        </div>
 
+        <div className="grid md:grid-cols-2 gap-6">
           {/* By Sector */}
-          <div className="bg-white p-6 rounded-xl shadow-sm border">
-            <h2 className="text-lg font-semibold mb-4">By Sector</h2>
-            <div className="space-y-2">
-              {analytics.bySector.length > 0 ? (
-                analytics.bySector.map(item => (
-                  <div key={item.sector} className="flex items-center justify-between p-2 rounded-lg bg-gray-50">
-                    <span className="text-sm text-gray-700">{item.sector}</span>
-                    <span className="font-semibold">{item._count.sector}</span>
+          <div className="card bg-dark-900/50 border-dark-800 p-6">
+            <h2 className="text-xl font-semibold text-white mb-4">By Sector</h2>
+            <div className="space-y-3">
+              {analytics.bySector.length === 0 ? (
+                <p className="text-dark-500">No data</p>
+              ) : (
+                analytics.bySector.map((item) => (
+                  <div key={item.sector} className="flex justify-between">
+                    <span className="text-dark-400 capitalize">{item.sector}</span>
+                    <span className="text-white font-medium">{item._count.sector}</span>
                   </div>
                 ))
-              ) : (
-                <p className="text-gray-500 text-sm">No sector data available</p>
               )}
             </div>
           </div>
 
-          {/* Interests */}
-          <div className="bg-white p-6 rounded-xl shadow-sm border">
-            <h2 className="text-lg font-semibold mb-4">Intro Requests</h2>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-yellow-50 rounded-lg">
-                <div className="text-2xl font-bold text-yellow-600">{analytics.interests.requested}</div>
-                <div className="text-sm text-gray-600">Requested</div>
-              </div>
-              <div className="text-center p-4 bg-green-50 rounded-lg">
-                <div className="text-2xl font-bold text-green-600">{analytics.interests.approved}</div>
-                <div className="text-sm text-gray-600">Approved</div>
-              </div>
-              <div className="text-center p-4 bg-red-50 rounded-lg">
-                <div className="text-2xl font-bold text-red-600">{analytics.interests.declined}</div>
-                <div className="text-sm text-gray-600">Declined</div>
-              </div>
+          {/* By Stage */}
+          <div className="card bg-dark-900/50 border-dark-800 p-6">
+            <h2 className="text-xl font-semibold text-white mb-4">By Stage</h2>
+            <div className="space-y-3">
+              {analytics.byStage.length === 0 ? (
+                <p className="text-dark-500">No data</p>
+              ) : (
+                analytics.byStage.map((item) => (
+                  <div key={item.stage} className="flex justify-between">
+                    <span className="text-dark-400 capitalize">{item.stage}</span>
+                    <span className="text-white font-medium">{item._count.stage}</span>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>

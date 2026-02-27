@@ -6,6 +6,7 @@ import { prisma } from './prisma';
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
+    maxAge: 24 * 60 * 60, // 24 hours
   },
   pages: {
     signIn: '/login',
@@ -22,8 +23,11 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
+        // Sanitize email input
+        const email = credentials.email.toLowerCase().trim();
+
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+          where: { email },
         });
 
         if (!user || !user.password) {

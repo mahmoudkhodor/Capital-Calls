@@ -55,10 +55,12 @@ export default function LoginPage() {
 
     try {
       const result = await signIn('credentials', {
-        email: formData.email,
+        email: formData.email.toLowerCase().trim(),
         password: formData.password,
         redirect: false,
       });
+
+      console.log('Login result:', result);
 
       if (result?.error) {
         setError('Invalid email or password');

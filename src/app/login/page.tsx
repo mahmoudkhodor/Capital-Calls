@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { z } from 'zod';
@@ -15,6 +15,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
+  const { data: session } = useSession();
   const [formData, setFormData] = useState<LoginFormData>({
     email: '',
     password: '',
@@ -62,8 +63,8 @@ export default function LoginPage() {
       if (result?.error) {
         setError('Invalid email or password');
       } else {
-        const response = await fetch('/api/auth/session');
-        const session = await response.json();
+        // Wait a moment for session to update
+        await new Promise(resolve => setTimeout(resolve, 500));
 
         if (session?.user?.role === 'ADMIN') {
           router.push('/admin');

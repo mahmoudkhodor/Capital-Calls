@@ -64,19 +64,9 @@ export default function LoginPage() {
 
       if (result?.error) {
         setError('Invalid email or password');
-      } else {
-        // Wait a moment for session to update
-        await new Promise(resolve => setTimeout(resolve, 500));
-
-        if (session?.user?.role === 'ADMIN') {
-          router.push('/admin');
-        } else if (session?.user?.role === 'STARTUP') {
-          router.push('/startup');
-        } else if (session?.user?.role === 'INVESTOR') {
-          router.push('/investor');
-        } else {
-          router.push('/');
-        }
+      } else if (result?.ok) {
+        // Redirect based on role
+        router.push('/admin');
       }
     } catch (err) {
       setError('An error occurred. Please try again.');

@@ -32,13 +32,19 @@ export default function StartupUpload() {
     try {
       // First get the startup ID
       const startupRes = await fetch('/api/startup/my');
-      if (!startupRes.ok) throw new Error('Failed to get startup');
+      const startupData = await startupRes.json();
 
-      const myStartup = await startupRes.json();
+      console.log('Startup response:', startupData);
 
-      if (!myStartup) {
-        throw new Error('No startup found for this account');
+      if (!startupRes.ok) {
+        throw new Error(startupData.error || 'Failed to get startup');
       }
+
+      if (!startupData || !startupData.id) {
+        throw new Error('No startup found for this account: ' + JSON.stringify(startupData));
+      }
+
+      const myStartup = startupData;
 
       const formData = new FormData();
       formData.append('file', file);

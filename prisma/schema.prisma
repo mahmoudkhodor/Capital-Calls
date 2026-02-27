@@ -1,0 +1,175 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// Enums as String for SQLite compatibility
+// UserRole: STARTUP, ADMIN, INVESTOR
+// StartupStatus: DRAFT, SUBMITTED, IN_REVIEW, FOLLOW_UP, SHORTLISTED, NOT_MOVING_FORWARD
+// IntroStatus: REQUESTED, AWAITING_FOUNDER, APPROVED, COMPLETED, DECLINED
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String?
+  name          String?
+  role          String    @default("STARTUP")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  startup           Startup?
+  dealRooms         DealRoomInvestor[]
+  createdDealRooms  DealRoom[]
+  interests         Interest[]          @relation("InvestorInterests")
+  auditLogs         AuditLog[]
+}
+
+model Startup {
+  id                  String        @id @default(cuid())
+  ownerUserId         String        @unique
+  ownerUser           User          @relation(fields: [ownerUserId], references: [id])
+
+  // Company Info
+  companyName         String
+  website             String?
+  hq                  String?
+  incorporationCountry String?
+  stage               String?
+  sector              String?
+  b2bB2c              String?
+  tractionHighlights  String?
+
+  // Team Info
+  founders            String?
+  teamRoles           String?
+  linkedin            String?
+
+  // Product Info
+  problem             String?
+  solution            String?
+  differentiation     String?
+  moat                String?
+
+  // Metrics
+  revenue             String?
+  growth              String?
+  users               String?
+  retention           String?
+  cac                 String?
+  ltv                 String?
+
+  // Fundraising
+  roundType           String?
+  targetAmount        String?
+  valuation           String?
+  useOfFunds          String?
+
+  // Status & Score
+  status              String        @default("DRAFT")
+  score               Int?
+  teamScore           Int?
+  marketScore         Int?
+  tractionScore       Int?
+  productScore        Int?
+
+  // Admin fields
+  tags                String?
+  adminNotes          String?
+  internalField       String?
+
+  // Timestamps
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  // Relations
+  documents           StartupDocument[]
+  dealRoomStartups    DealRoomStartup[]
+  interests           Interest[]
+}
+
+model StartupDocument {
+  id          String   @id @default(cuid())
+  startupId   String
+  startup     Startup  @relation(fields: [startupId], references: [id], onDelete: Cascade)
+  type        String
+  filename    String
+  url         String
+  createdAt   DateTime @default(now())
+}
+
+model DealRoom {
+  id                  String   @id @default(cuid())
+  name                String
+  description         String?
+  createdByAdminId    String
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  // Relations
+  createdByAdmin      User     @relation(fields: [createdByAdminId], references: [id])
+  startups            DealRoomStartup[]
+  investors           DealRoomInvestor[]
+  visibilityConfigs   VisibilityConfig[]
+  interests           Interest[]
+}
+
+model DealRoomStartup {
+  id          String   @id @default(cuid())
+  dealRoomId  String
+  startupId   String
+  dealRoom    DealRoom @relation(fields: [dealRoomId], references: [id], onDelete: Cascade)
+  startup     Startup  @relation(fields: [startupId], references: [id], onDelete: Cascade)
+
+  @@unique([dealRoomId, startupId])
+}
+
+model DealRoomInvestor {
+  id              String   @id @default(cuid())
+  dealRoomId      String
+  investorUserId  String
+  dealRoom        DealRoom @relation(fields: [dealRoomId], references: [id], onDelete: Cascade)
+  investor        User     @relation(fields: [investorUserId], references: [id], onDelete: Cascade)
+
+  @@unique([dealRoomId, investorUserId])
+}
+
+model VisibilityConfig {
+  id              String   @id @default(cuid())
+  dealRoomId      String   @unique
+  dealRoom        DealRoom @relation(fields: [dealRoomId], references: [id], onDelete: Cascade)
+  visibleFields   String   @default("[]")
+}
+
+model Interest {
+  id          String   @id @default(cuid())
+  investorId  String
+  startupId   String
+  dealRoomId  String?
+  note        String?
+  status      String   @default("REQUESTED")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  investor    User     @relation("InvestorInterests", fields: [investorId], references: [id])
+  startup     Startup  @relation(fields: [startupId], references: [id])
+  dealRoom    DealRoom?   @relation(fields: [dealRoomId], references: [id])
+
+  @@unique([investorId, startupId, dealRoomId])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String
+  actor       User     @relation(fields: [actorUserId], references: [id])
+  action      String
+  entityType  String
+  entityId    String
+  meta        String?
+  createdAt   DateTime @default(now())
+}

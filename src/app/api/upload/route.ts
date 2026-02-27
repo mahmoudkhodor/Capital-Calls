@@ -21,8 +21,8 @@ export async function POST(req: NextRequest) {
     // Generate unique filename
     const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
 
-    // Upload to Vercel Blob (no access specified - uses store default)
-    const blob = await put(filename, file);
+    // Upload to Vercel Blob (private store)
+    const blob = await put(filename, file, { access: 'private' });
 
     console.log('Blob uploaded successfully:', blob.url);
 

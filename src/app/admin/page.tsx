@@ -85,7 +85,14 @@ export default async function AdminDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+          <Link
+            href="/admin/analytics"
+            className="bg-cyan-600 hover:bg-cyan-700 text-white p-6 rounded-xl text-center"
+          >
+            <div className="text-xl font-semibold">Analytics</div>
+            <div className="text-cyan-200">Stats & metrics</div>
+          </Link>
           <Link
             href="/admin/pipeline"
             className="bg-indigo-600 hover:bg-indigo-700 text-white p-6 rounded-xl text-center"

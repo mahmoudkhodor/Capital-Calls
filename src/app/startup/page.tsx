@@ -47,8 +47,6 @@ export default async function StartupDashboard() {
             <div className="flex items-center gap-8">
               <Link href="/startup" className="flex items-center gap-2">
                 <Logo size="sm" />
-                  
-                </div>
                 <span className="text-white font-semibold">Capital Call</span>
                 <span className="px-2 py-0.5 rounded text-xs bg-green-500/20 text-green-400">Startup</span>
               </Link>

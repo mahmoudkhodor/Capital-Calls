@@ -64,7 +64,18 @@ export default function LoginPage() {
       if (result?.error) {
         setError('Invalid email or password');
       } else if (result?.ok) {
-        router.push('/admin');
+        // Redirect based on role
+        const response = await fetch('/api/auth/session');
+        const session = await response.json();
+        if (session?.user?.role === 'ADMIN') {
+          router.push('/admin');
+        } else if (session?.user?.role === 'STARTUP') {
+          router.push('/startup');
+        } else if (session?.user?.role === 'INVESTOR') {
+          router.push('/investor');
+        } else {
+          router.push('/admin');
+        }
       } else {
         setError('Login failed. Please try again.');
       }

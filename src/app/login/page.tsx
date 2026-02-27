@@ -5,6 +5,7 @@ import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { z } from 'zod';
+import PremiumLoader from '@/components/PremiumLoader';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -60,15 +61,12 @@ export default function LoginPage() {
         redirect: false,
       });
 
-      console.log('Login result:', result);
-
       if (result?.error) {
-        setError('Invalid email or password: ' + result.error);
+        setError('Invalid email or password');
       } else if (result?.ok) {
-        // Redirect based on role
         router.push('/admin');
       } else {
-        setError('Login failed. Please try again. Result: ' + JSON.stringify(result));
+        setError('Login failed. Please try again.');
       }
     } catch (err) {
       setError('An error occurred. Please try again.');
@@ -78,34 +76,43 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-dark-950 flex items-center justify-center px-4">
+      {/* Animated background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-600/20 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-accent/20 rounded-full blur-3xl" />
+      </div>
+
+      <div className="w-full max-w-md relative z-10">
         {/* Logo / Header */}
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-block">
-            <h1 className="text-4xl font-bold text-white">Capital Call</h1>
+        <div className="text-center mb-8 animate-fade-in">
+          <Link href="/" className="inline-flex items-center gap-2">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+              <span className="text-white font-bold text-xl">C</span>
+            </div>
           </Link>
-          <p className="text-slate-400 mt-2">Sign in to your account</p>
+          <h1 className="text-3xl font-bold text-white mt-6">Welcome back</h1>
+          <p className="text-dark-400 mt-2">Sign in to your Capital Call account</p>
         </div>
 
-        <div className="bg-slate-800/80 backdrop-blur-sm p-8 rounded-2xl border border-slate-700 shadow-2xl">
+        <div className="card p-8 animate-slide-up">
           {error && (
-            <div className="bg-red-500/20 border border-red-500/50 text-red-300 px-4 py-3 rounded-lg mb-6">
+            <div className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
+              <label className="label text-dark-300">
                 Email Address
               </label>
               <input
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className={`w-full px-4 py-3 bg-slate-900/50 border rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
-                  errors.email ? 'border-red-500' : 'border-slate-600'
+                className={`input bg-dark-900/50 border-dark-700 text-white placeholder-dark-500 focus:ring-primary-500 ${
+                  errors.email ? 'border-red-500' : ''
                 }`}
                 placeholder="you@example.com"
               />
@@ -115,15 +122,15 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
+              <label className="label text-dark-300">
                 Password
               </label>
               <input
                 type="password"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className={`w-full px-4 py-3 bg-slate-900/50 border rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
-                  errors.password ? 'border-red-500' : 'border-slate-600'
+                className={`input bg-dark-900/50 border-dark-700 text-white placeholder-dark-500 focus:ring-primary-500 ${
+                  errors.password ? 'border-red-500' : ''
                 }`}
                 placeholder="Enter your password"
               />
@@ -135,7 +142,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+              className="btn-primary w-full py-3.5"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -151,12 +158,12 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-slate-700 text-center">
-            <p className="text-slate-400 text-sm">
+          <div className="mt-6 pt-6 border-t border-dark-800 text-center">
+            <p className="text-dark-400 text-sm">
               Don&apos;t have an account?{' '}
               <Link
                 href="/apply"
-                className="text-blue-400 hover:text-blue-300 font-medium transition"
+                className="text-primary-500 hover:text-primary-400 font-medium transition-colors"
               >
                 Apply as a startup
               </Link>
@@ -168,11 +175,19 @@ export default function LoginPage() {
         <div className="text-center mt-6">
           <Link
             href="/"
-            className="text-slate-500 hover:text-slate-300 text-sm transition"
+            className="text-dark-500 hover:text-dark-300 text-sm transition-colors"
           >
             ← Back to home
           </Link>
         </div>
+
+        {/* Premium Loading Overlay */}
+        {loading && (
+          <PremiumLoader
+            message="Welcome back"
+            submessage="Signing you in..."
+          />
+        )}
       </div>
     </div>
   );

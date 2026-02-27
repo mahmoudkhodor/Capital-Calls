@@ -63,10 +63,12 @@ export default function LoginPage() {
       console.log('Login result:', result);
 
       if (result?.error) {
-        setError('Invalid email or password');
+        setError('Invalid email or password: ' + result.error);
       } else if (result?.ok) {
         // Redirect based on role
         router.push('/admin');
+      } else {
+        setError('Login failed. Please try again. Result: ' + JSON.stringify(result));
       }
     } catch (err) {
       setError('An error occurred. Please try again.');

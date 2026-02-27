@@ -13,7 +13,6 @@ export default function StartupUpload() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [debug, setDebug] = useState('');
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -29,21 +28,16 @@ export default function StartupUpload() {
 
     setUploading(true);
     setError('');
-    setDebug('Starting upload...');
 
     try {
       // First get the startup ID
-      setDebug('Getting startup info...');
       const startupRes = await fetch('/api/startup/my');
       const startupData = await startupRes.json();
 
-      setDebug('Startup data: ' + JSON.stringify(startupData));
-
       if (!startupRes.ok || !startupData.id) {
-        throw new Error('No startup found: ' + JSON.stringify(startupData));
+        throw new Error('No startup found for this account');
       }
 
-      setDebug('Uploading file...');
       const formData = new FormData();
       formData.append('file', file);
       formData.append('startupId', startupData.id);
@@ -54,18 +48,15 @@ export default function StartupUpload() {
         body: formData,
       });
 
-      const resData = await res.json();
-      setDebug('Response: ' + JSON.stringify(resData));
-
       if (!res.ok) {
-        throw new Error(resData.error || 'Upload failed: ' + JSON.stringify(resData));
+        const data = await res.json();
+        throw new Error(data.error || 'Upload failed');
       }
 
       setSuccess(true);
       setTimeout(() => router.push('/startup'), 2000);
     } catch (err: any) {
       setError(err.message);
-      setDebug('Error: ' + err.message);
     } finally {
       setUploading(false);
     }
@@ -88,12 +79,6 @@ export default function StartupUpload() {
       <div className="container mx-auto px-4 py-8 max-w-xl">
         <div className="bg-white rounded-xl shadow-sm border p-6">
           <h1 className="text-2xl font-bold mb-6">Upload Document</h1>
-
-          {debug && (
-            <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded-lg mb-4 text-sm">
-              <pre className="whitespace-pre-wrap">{debug}</pre>
-            </div>
-          )}
 
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">

@@ -9,16 +9,14 @@ export async function POST(req: NextRequest) {
     const startupId = formData.get('startupId') as string;
     const type = formData.get('type') as string;
 
+    console.log('Upload request - startupId:', startupId, 'file:', file?.name, 'type:', type);
+
     if (!file || !startupId) {
       return NextResponse.json(
-        { error: 'Missing file or startup ID' },
+        { error: 'Missing file or startup ID', received: { file: !!file, startupId } },
         { status: 400 }
       );
     }
-
-    // Debug: log if token exists (not the value)
-    const hasToken = !!process.env.BLOB_READ_WRITE_TOKEN;
-    console.log('Blob token configured:', hasToken);
 
     // Generate unique filename
     const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
@@ -28,7 +26,7 @@ export async function POST(req: NextRequest) {
       access: 'public',
     });
 
-    console.log('Blob uploaded:', blob.url);
+    console.log('Blob uploaded successfully:', blob.url);
 
     // Save to database
     const document = await prisma.startupDocument.create({
@@ -40,10 +38,12 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    console.log('Document saved:', document);
+
     return NextResponse.json(document);
   } catch (error: any) {
     console.error('Upload error:', error);
-    return NextResponse.json({ error: error.message || 'Upload failed' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Upload failed', stack: error.stack }, { status: 500 });
   }
 }
 

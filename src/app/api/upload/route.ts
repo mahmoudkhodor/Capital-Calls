@@ -53,9 +53,5 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// Configure body size limit for file uploads
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+// Use force-dynamic to disable static caching for this route
+export const dynamic = 'force-dynamic';

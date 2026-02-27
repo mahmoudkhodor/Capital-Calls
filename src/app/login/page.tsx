@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { z } from 'zod';
 import PremiumLoader from '@/components/PremiumLoader';
+import Logo from '@/components/Logo';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -102,9 +103,7 @@ export default function LoginPage() {
         {/* Logo / Header */}
         <div className="text-center mb-8 animate-fade-in">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
-              <span className="text-white font-bold text-xl">C</span>
-            </div>
+            <Logo size="lg" />
           </Link>
           <h1 className="text-3xl font-bold text-white mt-6">Welcome back</h1>
           <p className="text-dark-400 mt-2">Sign in to your Capital Call account</p>

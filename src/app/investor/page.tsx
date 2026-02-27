@@ -3,6 +3,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import Logo from '@/components/Logo';
 
 export default async function InvestorDashboard() {
   const session = await getServerSession(authOptions);
@@ -50,8 +51,8 @@ export default async function InvestorDashboard() {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-8">
               <Link href="/investor" className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">C</span>
+                <Logo size="sm" />
+                  
                 </div>
                 <span className="text-white font-semibold">Capital Call</span>
                 <span className="px-2 py-0.5 rounded text-xs bg-accent/20 text-accent">Investor</span>

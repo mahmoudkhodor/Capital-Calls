@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Logo from '@/components/Logo';
 
 type Analytics = {
   overview: {
@@ -71,8 +72,8 @@ export default function AnalyticsPage() {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-8">
               <Link href="/admin" className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">C</span>
+                <Logo size="sm" />
+                  
                 </div>
                 <span className="text-white font-semibold">Capital Call</span>
                 <span className="px-2 py-0.5 rounded text-xs bg-primary-500/20 text-primary-400">Admin</span>

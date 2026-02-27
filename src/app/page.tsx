@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import Logo from '@/components/Logo';
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -29,9 +30,7 @@ export default async function Home() {
         <div className="container-custom">
           <div className="flex items-center justify-between h-20">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
-                <span className="text-white font-bold text-lg">C</span>
-              </div>
+              <Logo size="md" />
               <span className="text-xl font-bold text-white">Capital Call</span>
             </Link>
 
@@ -197,9 +196,7 @@ export default async function Home() {
         <div className="container-custom">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">C</span>
-              </div>
+              <Logo size="sm" />
               <span className="text-white font-medium">Capital Call</span>
             </div>
             <p className="text-dark-500 text-sm">

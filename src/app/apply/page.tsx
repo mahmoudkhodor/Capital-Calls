@@ -151,10 +151,16 @@ export default function ApplyPage() {
           formDataUpload.append('startupId', startupId);
           formDataUpload.append('type', 'pitch_deck');
 
-          await fetch('/api/upload', {
+          const uploadRes = await fetch('/api/upload', {
             method: 'POST',
             body: formDataUpload,
           });
+
+          if (!uploadRes.ok) {
+            const uploadError = await uploadRes.json();
+            console.error('Upload failed:', uploadError);
+            // Continue anyway - the startup was created successfully
+          }
         }
 
         router.push('/login?registered=true');

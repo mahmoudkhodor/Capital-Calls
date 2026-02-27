@@ -16,6 +16,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Check if blob token is configured
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      console.error('BLOB_READ_WRITE_TOKEN is not set');
+      return NextResponse.json(
+        { error: 'File storage not configured. Please contact admin.' },
+        { status: 500 }
+      );
+    }
+
     // Generate unique filename
     const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
 
@@ -35,9 +44,9 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(document);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Upload error:', error);
-    return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Upload failed' }, { status: 500 });
   }
 }
 

@@ -3,6 +3,9 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import Logo from '@/components/Logo';
+import PsychedelicBackground from '@/components/landing/PsychedelicBackground';
+import FloatingShapes from '@/components/landing/FloatingShapes';
+import ScrollReveal from '@/components/landing/ScrollReveal';
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -15,37 +18,41 @@ export default async function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-950">
-      {/* Animated background */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary-600/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-        {/* Grid pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_11px)] bg-[size:50px,transparent_px_50px]" />
-      </div>
+    <div className="min-h-screen bg-dark-950 relative overflow-x-hidden">
+      {/* 3D Psychedelic Background */}
+      <PsychedelicBackground />
+
+      {/* Noise overlay */}
+      <div className="noise-overlay" />
 
       {/* Navigation */}
-      <nav className="relative z-10 border-b border-white/5 backdrop-blur-sm bg-dark-950/50">
+      <nav className="relative z-50 border-b border-white/10 backdrop-blur-md bg-dark-950/30">
         <div className="container-custom">
           <div className="flex items-center justify-between h-20">
-            <Link href="/" className="flex items-center gap-2">
-              <Logo size="md" />
-              <span className="text-xl font-bold text-white">Capital Call</span>
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="relative">
+                <Logo size="md" />
+                <div className="absolute inset-0 bg-neon-pink/50 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              </div>
+              <span className="text-xl font-bold text-white group-hover:neon-text transition-all duration-300">
+                Capital Call
+              </span>
             </Link>
 
             <div className="flex items-center gap-4">
               <Link
                 href="/login"
-                className="btn-ghost text-white/80 hover:text-white"
+                className="px-5 py-2 text-white/80 hover:text-white transition-all duration-300 hover:neon-text"
               >
                 Sign In
               </Link>
               <Link
                 href="/apply"
-                className="btn-primary"
+                className="relative px-6 py-3 text-white font-semibold overflow-hidden rounded-full group"
               >
-                Apply Now
+                <span className="absolute inset-0 bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan opacity-80 group-hover:opacity-100 transition-opacity" />
+                <span className="absolute inset-0 bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan blur-lg opacity-50 group-hover:opacity-100 transition-opacity" />
+                <span className="relative">Apply Now</span>
               </Link>
             </div>
           </div>
@@ -53,153 +60,185 @@ export default async function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative z-10 section-padding">
-        <div className="container-custom">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-400 text-sm font-medium mb-8 animate-fade-in">
-              <span className="w-2 h-2 rounded-full bg-primary-500 animate-pulse" />
-              The future of startup fundraising
+      <section className="relative z-10 min-h-[90vh] flex items-center justify-center">
+        <div className="container-custom text-center">
+          <ScrollReveal>
+            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-10">
+              <span className="w-2 h-2 rounded-full bg-neon-green animate-pulse" />
+              <span className="text-white/80">The future of startup fundraising</span>
             </div>
+          </ScrollReveal>
 
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 animate-slide-up tracking-tight">
-              Where <span className="gradient-text">Visionary</span> Founders
-              <br />
-              Meet Their Investors
+          <ScrollReveal delay={0.1}>
+            <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold text-white mb-8 tracking-tight leading-tight">
+              <span className="block animate-float bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan bg-clip-text text-transparent bg-[length:200%_200%] animate-[wave_3s_ease-in-out_infinite]">
+                Where
+              </span>
+              <span className="block animate-float bg-gradient-to-r from-neon-cyan via-neon-green to-neon-yellow bg-clip-text text-transparent" style={{ animationDelay: '0.5s' }}>
+                Visionary
+              </span>
+              <span className="block animate-float bg-gradient-to-r from-neon-yellow via-neon-orange to-neon-pink bg-clip-text text-transparent" style={{ animationDelay: '1s' }}>
+                Founders
+              </span>
+              <span className="block mt-4 text-4xl md:text-6xl">
+                Meet Their <span className="neon-text text-neon-purple">Investors</span>
+              </span>
             </h1>
+          </ScrollReveal>
 
-            <p className="text-xl text-dark-400 mb-10 max-w-2xl mx-auto animate-slide-up animation-delay-100">
+          <ScrollReveal delay={0.2}>
+            <p className="text-xl md:text-2xl text-white/60 mb-12 max-w-3xl mx-auto leading-relaxed">
               Connect with the right investors through our curated dealroom platform.
               Every connection is meaningful, every deal is crafted for success.
             </p>
+          </ScrollReveal>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up animation-delay-200">
-              <Link href="/apply" className="btn-primary text-lg px-8 py-4 w-full sm:w-auto">
-                Apply as Startup
+          <ScrollReveal delay={0.3}>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+              <Link
+                href="/apply"
+                className="group relative px-10 py-5 text-lg font-bold text-white overflow-hidden rounded-full"
+              >
+                <span className="absolute inset-0 bg-gradient-to-r from-neon-pink to-neon-purple" />
+                <span className="absolute inset-0 bg-gradient-to-r from-neon-pink to-neon-purple blur-lg opacity-70 group-hover:opacity-100 transition-opacity" />
+                <span className="absolute inset-0 bg-gradient-to-r from-neon-purple to-neon-cyan opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <span className="relative">Apply as Startup</span>
               </Link>
-              <Link href="/login" className="btn-secondary bg-white/5 border-white/10 text-white hover:bg-white/10 w-full sm:w-auto">
+              <Link
+                href="/login"
+                className="px-10 py-5 text-lg font-medium text-white border border-white/20 rounded-full hover:border-neon-cyan hover:text-neon-cyan transition-all duration-300 backdrop-blur-sm"
+              >
                 Investor Login
               </Link>
             </div>
-          </div>
+          </ScrollReveal>
+
+          {/* Floating shapes in hero */}
+          <FloatingShapes className="opacity-30" />
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="relative z-10 py-24 bg-dark-900/50">
+      <section className="relative z-10 py-32">
         <div className="container-custom">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Everything You Need to Fundraise
+          <ScrollReveal>
+            <h2 className="text-4xl md:text-6xl font-bold text-white text-center mb-20">
+              Everything You <span className="neon-text text-neon-pink">Need</span>
             </h2>
-            <p className="text-dark-400 max-w-2xl mx-auto">
-              From application to investment, we've built the tools that make the difference between good deals and great ones.
-            </p>
-          </div>
+          </ScrollReveal>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                icon: (
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                ),
-                title: "For Founders",
-                description: "Apply in minutes, not hours. Track your application status in real-time and connect directly with investors who align with your vision.",
+                icon: '⚡',
+                title: 'For Founders',
+                description: 'Apply in minutes, not hours. Track your application status in real-time and connect directly with investors who align with your vision.',
+                color: 'neon-pink',
               },
               {
-                icon: (
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                ),
-                title: "For Investors",
-                description: "Access curated opportunities, discover hidden gems, and make data-driven investment decisions with our intelligent matching system.",
+                icon: '📊',
+                title: 'For Investors',
+                description: 'Access curated opportunities, discover hidden gems, and make data-driven investment decisions with our intelligent matching system.',
+                color: 'neon-cyan',
               },
               {
-                icon: (
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                ),
-                title: "Community",
-                description: "Join a network of founders and investors who trust Capital Call to facilitate meaningful connections that drive innovation.",
+                icon: '🌟',
+                title: 'Community',
+                description: 'Join a network of founders and investors who trust Capital Call to facilitate meaningful connections that drive innovation.',
+                color: 'neon-green',
               },
             ].map((feature, i) => (
-              <div
-                key={i}
-                className="card bg-dark-900/50 border-dark-800 p-8 group hover:border-primary-500/30 hover:shadow-lg hover:shadow-primary-500/10 transition-all duration-500"
-                style={{ animationDelay: `${i * 100}ms` }}
-              >
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-accent/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="relative w-12 h-12 rounded-xl bg-primary-500/10 flex items-center justify-center text-primary-500 mb-6 group-hover:bg-primary-500 group-hover:text-white transition-all duration-300">
-                    {feature.icon}
+              <ScrollReveal key={i} delay={i * 0.15} direction={i % 2 === 0 ? 'left' : 'right'}>
+                <div className="group glass-neon p-8 rounded-2xl hover:scale-105 transition-all duration-500 cursor-pointer">
+                  <div className="relative mb-6">
+                    <div className={`absolute inset-0 bg-${feature.color}/30 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                    <div className={`relative w-16 h-16 rounded-xl bg-${feature.color}/20 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-500`}>
+                      {feature.icon}
+                    </div>
                   </div>
+                  <h3 className={`text-2xl font-semibold text-${feature.color} mb-4 group-hover:neon-text transition-all duration-300`}>
+                    {feature.title}
+                  </h3>
+                  <p className="text-white/60 leading-relaxed">
+                    {feature.description}
+                  </p>
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
-                <p className="text-dark-400 leading-relaxed">{feature.description}</p>
-              </div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="relative z-10 py-20">
+      <section className="relative z-10 py-32">
         <div className="container-custom">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
-              { value: "$2B+", label: "Capital Deployed", icon: "💰" },
-              { value: "500+", label: "Startups Funded", icon: "🚀" },
-              { value: "200+", label: "Active Investors", icon: "👥" },
-              { value: "95%", label: "Match Rate", icon: "🎯" },
+              { value: '$2B+', label: 'Capital Deployed', color: 'neon-pink' },
+              { value: '500+', label: 'Startups Funded', color: 'neon-purple' },
+              { value: '200+', label: 'Active Investors', color: 'neon-cyan' },
+              { value: '95%', label: 'Match Rate', color: 'neon-green' },
             ].map((stat, i) => (
-              <div key={i} className="text-center">
-                <div className="text-4xl mb-2">{stat.icon}</div>
-                <div className="text-3xl md:text-4xl font-bold text-white mb-2">{stat.value}</div>
-                <div className="text-dark-400">{stat.label}</div>
-              </div>
+              <ScrollReveal key={i} delay={i * 0.1}>
+                <div className="text-center group">
+                  <div className={`text-5xl md:text-7xl font-bold text-${stat.color} mb-2 group-hover:scale-110 transition-transform duration-300`}>
+                    {stat.value}
+                  </div>
+                  <div className="text-white/60 text-lg">{stat.label}</div>
+                </div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="relative z-10 section-padding">
+      <section className="relative z-10 py-32">
         <div className="container-custom">
-          <div className="gradient-border p-12 md:p-16 text-center relative overflow-hidden rounded-2xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary-600/10 to-accent/10" />
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-primary-500 to-accent rounded-full" />
-            <div className="relative z-10">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                Ready to Get Started?
-              </h2>
-              <p className="text-dark-400 max-w-xl mx-auto mb-8">
-                Join hundreds of startups and investors already using Capital Call to close their next big deal.
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link href="/apply" className="btn-primary w-full sm:w-auto pulse-glow">
-                  Apply as Startup
-                </Link>
-                <Link href="/login" className="btn-ghost text-white w-full sm:w-auto">
-                  Contact Sales
-                </Link>
+          <ScrollReveal>
+            <div className="relative p-12 md:p-20 text-center rounded-3xl overflow-hidden">
+              {/* Animated gradient background */}
+              <div className="absolute inset-0 bg-gradient-to-r from-neon-pink/20 via-neon-purple/20 to-neon-cyan/20 animate-pulse-slow" />
+              <div className="absolute inset-0 bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
+
+              {/* Animated border */}
+              <div className="absolute inset-0 rounded-3xl animate-morph">
+                <div className="absolute inset-0 rounded-3xl border-2 border-neon-pink/50" />
+              </div>
+
+              <div className="relative z-10">
+                <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
+                  Ready to <span className="neon-text text-neon-pink">Get Started?</span>
+                </h2>
+                <p className="text-xl text-white/60 max-w-2xl mx-auto mb-10">
+                  Join hundreds of startups and investors already using Capital Call to close their next big deal.
+                </p>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                  <Link
+                    href="/apply"
+                    className="group relative px-12 py-6 text-xl font-bold text-white overflow-hidden rounded-full"
+                  >
+                    <span className="absolute inset-0 bg-gradient-to-r from-neon-green to-neon-cyan" />
+                    <span className="absolute inset-0 bg-gradient-to-r from-neon-green to-neon-cyan blur-lg opacity-70 group-hover:opacity-100 transition-opacity" />
+                    <span className="absolute inset-0 bg-gradient-to-r from-neon-cyan to-neon-pink opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <span className="relative">Apply as Startup</span>
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 py-8 border-t border-white/5">
+      <footer className="relative z-10 py-12 border-t border-white/10">
         <div className="container-custom">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-3">
               <Logo size="sm" />
               <span className="text-white font-medium">Capital Call</span>
             </div>
-            <p className="text-dark-500 text-sm">
+            <p className="text-white/40 text-sm">
               © 2026 Capital Call. All rights reserved.
             </p>
           </div>

@@ -38,6 +38,14 @@ const config: Config = {
           light: '#f5f3ff',
           DEFAULT: '#8b5cf6',
           dark: '#7c3aed',
+        },
+        neon: {
+          pink: '#ff00ff',
+          purple: '#bf00ff',
+          cyan: '#00ffff',
+          green: '#39ff14',
+          yellow: '#ffff00',
+          orange: '#ff6600',
         }
       },
       fontFamily: {
@@ -56,6 +64,11 @@ const config: Config = {
         'fade-in': 'fadeIn 0.5s ease-out',
         'slide-up': 'slideUp 0.5s ease-out',
         'slide-in': 'slideIn 0.3s ease-out',
+        'float': 'float 6s ease-in-out infinite',
+        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'spin-slow': 'spin 8s linear infinite',
+        'morph': 'morph 8s ease-in-out infinite',
+        'wave': 'wave 2s ease-in-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -69,6 +82,20 @@ const config: Config = {
         slideIn: {
           '0%': { opacity: '0', transform: 'translateX(-10px)' },
           '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
+        morph: {
+          '0%, 100%': { borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%' },
+          '50%': { borderRadius: '30% 60% 70% 40% / 50% 60% 30% 60%' },
+        },
+        wave: {
+          '0%, 100%': { transform: 'scale(1) rotate(0deg)' },
+          '25%': { transform: 'scale(1.1) rotate(5deg)' },
+          '50%': { transform: 'scale(1) rotate(0deg)' },
+          '75%': { transform: 'scale(0.9) rotate(-5deg)' },
         },
       },
     },

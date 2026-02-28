@@ -284,7 +284,7 @@ export default function PsychedelicBackground() {
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.5]);
 
   return (
-    <motion.div style={{ scale }} className="fixed inset-0 z-0">
+    <motion.div style={{ scale }} className="fixed inset-0 z-0 pointer-events-none">
       <Canvas
         camera={{ position: [0, 0, 10], fov: 60 }}
         gl={{ antialias: true, alpha: true }}

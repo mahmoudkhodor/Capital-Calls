@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { z } from 'zod';
 import PremiumLoader from '@/components/PremiumLoader';
 import Logo from '@/components/Logo';
+import InteractiveAvatar from '@/components/InteractiveAvatar';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -25,6 +26,9 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [usernameFocused, setUsernameFocused] = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const validateForm = (): boolean => {
     try {

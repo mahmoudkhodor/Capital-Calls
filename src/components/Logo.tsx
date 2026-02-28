@@ -8,10 +8,10 @@ interface LogoProps {
 
 export default function Logo({ size = 'md', href = '/' }: LogoProps) {
   const sizeClasses = {
-    sm: 'w-12 h-12',
-    md: 'w-16 h-16',
-    lg: 'w-20 h-20',
-    xl: 'w-32 h-32',
+    sm: 'w-14 h-10',
+    md: 'w-20 h-14',
+    lg: 'w-28 h-20',
+    xl: 'w-48 h-32',
   };
 
   return (
@@ -20,7 +20,7 @@ export default function Logo({ size = 'md', href = '/' }: LogoProps) {
         src="/logo.jpg"
         alt="Capital Call"
         fill
-        className="object-contain rounded-xl"
+        className="object-contain rounded-lg"
       />
     </Link>
   );

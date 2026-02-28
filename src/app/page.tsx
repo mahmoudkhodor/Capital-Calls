@@ -86,18 +86,18 @@ function AnimatedGradientBackground() {
   const { scrollYProgress } = useScroll();
   const rotate = useTransform(scrollYProgress, [0, 1], [0, 720]);
   const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 2, 1]);
-  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [1, 0.8, 0.8, 1]);
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [1, 0.6, 0.6, 1]);
 
   return (
     <motion.div
       className="fixed inset-0 pointer-events-none z-0"
       style={{ rotate, scale, opacity }}
     >
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-neon-pink/30 rounded-full blur-[100px] animate-pulse" />
-      <div className="absolute top-1/2 right-1/4 w-[450px] h-[450px] bg-neon-purple/30 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '0.5s' }} />
-      <div className="absolute bottom-1/4 left-1/3 w-[400px] h-[400px] bg-neon-cyan/30 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
-      <div className="absolute top-2/3 right-1/3 w-[350px] h-[350px] bg-neon-green/30 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1.5s' }} />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-neon-yellow/20 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-neon-pink/20 rounded-full blur-[100px] animate-pulse" />
+      <div className="absolute top-1/2 right-1/4 w-[450px] h-[450px] bg-neon-purple/20 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '0.5s' }} />
+      <div className="absolute bottom-1/4 left-1/3 w-[400px] h-[400px] bg-neon-cyan/20 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
+      <div className="absolute top-2/3 right-1/3 w-[350px] h-[350px] bg-neon-green/20 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1.5s' }} />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-neon-yellow/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
     </motion.div>
   );
 }
@@ -238,7 +238,9 @@ export default function Home() {
         style={{ opacity: heroOpacity, scale: heroScale, y: heroY }}
       >
         <FloatingShapes className="opacity-60" />
-        <div className="container-custom text-center cosmic-dust">
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-dark-950/60 z-0" />
+        <div className="container-custom text-center cosmic-dust relative z-10">
           <ScrollReveal>
             <motion.div
               className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-10 cursor-default holographic"
@@ -250,35 +252,36 @@ export default function Home() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.1}>
-            <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold text-white mb-8 tracking-tight leading-tight cursor-default">
+            <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold text-white mb-8 tracking-tight leading-tight cursor-default drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]">
               <motion.span
                 className="block animate-float bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan bg-clip-text text-transparent"
                 whileHover={{ scale: 1.1 }}
+                style={{ filter: 'drop-shadow(0 0 30px rgba(255,0,255,0.8))' }}
               >
                 Where
               </motion.span>
               <motion.span
                 className="block animate-float bg-gradient-to-r from-neon-cyan via-neon-green to-neon-yellow bg-clip-text text-transparent"
-                style={{ animationDelay: '0.5s' }}
+                style={{ animationDelay: '0.5s', filter: 'drop-shadow(0 0 30px rgba(0,255,255,0.8))' }}
                 whileHover={{ scale: 1.1 }}
               >
                 Visionary
               </motion.span>
               <motion.span
                 className="block animate-float bg-gradient-to-r from-neon-yellow via-neon-orange to-neon-pink bg-clip-text text-transparent"
-                style={{ animationDelay: '1s' }}
+                style={{ animationDelay: '1s', filter: 'drop-shadow(0 0 30px rgba(255,255,0,0.8))' }}
                 whileHover={{ scale: 1.1 }}
               >
                 Founders
               </motion.span>
               <span className="block mt-4 text-4xl md:text-6xl">
-                Meet Their <span className="neon-text text-neon-purple">Investors</span>
+                Meet Their <span className="neon-text text-neon-cyan drop-shadow-lg">Investors</span>
               </span>
             </h1>
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <p className="text-xl md:text-2xl text-white/60 mb-12 max-w-3xl mx-auto leading-relaxed cursor-default">
+            <p className="text-xl md:text-2xl text-white/90 font-medium mb-12 max-w-3xl mx-auto leading-relaxed cursor-default drop-shadow-md">
               Connect with the right investors through our curated dealroom platform.
               Every connection is meaningful, every deal is crafted for success.
             </p>
@@ -326,10 +329,12 @@ export default function Home() {
 
       {/* Features Section */}
       <section className="relative z-10 py-40 section-transition">
-        <div className="container-custom">
+        {/* Dark overlay for readability */}
+        <div className="absolute inset-0 bg-dark-950/70 z-0" />
+        <div className="container-custom relative z-10">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-6xl font-bold text-white text-center mb-20 cursor-default">
-              Everything You <span className="neon-text text-neon-pink glitch" data-text="Need">Need</span>
+            <h2 className="text-4xl md:text-6xl font-bold text-white text-center mb-20 cursor-default drop-shadow-lg">
+              Everything You <span className="neon-text text-neon-pink">Need</span>
             </h2>
           </ScrollReveal>
 
@@ -383,9 +388,11 @@ export default function Home() {
 
       {/* Stats Section */}
       <section className="relative z-10 py-40">
-        <div className="container-custom">
+        {/* Dark overlay for readability */}
+        <div className="absolute inset-0 bg-dark-950/70 z-0" />
+        <div className="container-custom relative z-10">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-6xl font-bold text-white text-center mb-20 cursor-default">
+            <h2 className="text-4xl md:text-6xl font-bold text-white text-center mb-20 cursor-default drop-shadow-lg">
               By The <span className="neon-text text-neon-cyan">Numbers</span>
             </h2>
           </ScrollReveal>
@@ -409,7 +416,9 @@ export default function Home() {
 
       {/* CTA Section */}
       <section className="relative z-10 py-40 section-transition">
-        <div className="container-custom">
+        {/* Dark overlay for readability */}
+        <div className="absolute inset-0 bg-dark-950/70 z-0" />
+        <div className="container-custom relative z-10">
           <ScrollReveal>
             <motion.div
               className="relative p-12 md:p-20 text-center rounded-3xl overflow-hidden"

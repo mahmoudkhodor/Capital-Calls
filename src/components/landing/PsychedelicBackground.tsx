@@ -432,9 +432,9 @@ export default function PsychedelicBackground() {
       >
         <Scene />
       </Canvas>
-      <div className="absolute inset-0 bg-gradient-to-b from-dark-950/30 via-transparent to-dark-950/50 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-dark-950/50 via-dark-950/30 to-dark-950/60 pointer-events-none" />
       <div className="absolute inset-0 pointer-events-none" style={{
-        background: 'radial-gradient(ellipse at center, transparent 0%, rgba(15, 23, 42, 0.4) 50%, rgba(15, 23, 42, 0.8) 100%)'
+        background: 'radial-gradient(ellipse at center, transparent 0%, rgba(15, 23, 42, 0.6) 50%, rgba(15, 23, 42, 0.9) 100%)'
       }} />
     </motion.div>
   );

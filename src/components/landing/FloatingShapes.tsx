@@ -1,11 +1,12 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Float } from '@react-three/drei';
+import { Float, MeshDistortMaterial } from '@react-three/drei';
 import * as THREE from 'three';
+import { useScroll } from 'framer-motion';
 
-function GiantTorusKnot({ color }: { color: string }) {
+function GiantTorusKnot({ color, scrollY }: { color: string; scrollY: number }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
@@ -22,10 +23,12 @@ function GiantTorusKnot({ color }: { color: string }) {
 
   useFrame((state) => {
     if (meshRef.current) {
-      meshRef.current.rotation.x = state.clock.elapsedTime * 0.4;
-      meshRef.current.rotation.y = state.clock.elapsedTime * 0.3;
-      meshRef.current.position.x = mousePos.x * 0.5;
-      meshRef.current.position.y = mousePos.y * 0.5;
+      meshRef.current.rotation.x = state.clock.elapsedTime * 0.4 + scrollY * Math.PI;
+      meshRef.current.rotation.y = state.clock.elapsedTime * 0.3 + scrollY * Math.PI * 2;
+      meshRef.current.position.x = mousePos.x * 0.5 + Math.sin(scrollY * 10) * 2;
+      meshRef.current.position.y = mousePos.y * 0.5 + Math.cos(scrollY * 10) * 2;
+      const scale = 1.2 + Math.sin(state.clock.elapsedTime * 0.5) * 0.3;
+      meshRef.current.scale.setScalar(scale);
     }
   });
 
@@ -166,7 +169,52 @@ function GiantTorus({ color }: { color: string }) {
   );
 }
 
+function MorphingOrb() {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePos({
+        x: (e.clientX / window.innerWidth) * 2 - 1,
+        y: -(e.clientY / window.innerHeight) * 2 + 1
+      });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  useFrame((state) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.x = state.clock.elapsedTime * 0.2;
+      meshRef.current.rotation.y = state.clock.elapsedTime * 0.3;
+      meshRef.current.position.x = mousePos.x * 1;
+      meshRef.current.position.y = mousePos.y * 1;
+    }
+  });
+
+  return (
+    <Float speed={1.5} rotationIntensity={1} floatIntensity={2}>
+      <mesh ref={meshRef} scale={0.8}>
+        <sphereGeometry args={[1, 64, 64]} />
+        <MeshDistortMaterial
+          color="#ff00ff"
+          distort={0.6}
+          speed={3}
+          roughness={0.2}
+          metalness={0.8}
+          emissive="#ff00ff"
+          emissiveIntensity={0.5}
+        />
+      </mesh>
+    </Float>
+  );
+}
+
 function Scene() {
+  const { scrollYProgress } = useScroll();
+  const scrollY = scrollYProgress.get();
+
   return (
     <>
       <ambientLight intensity={0.15} />
@@ -174,10 +222,11 @@ function Scene() {
       <pointLight position={[-10, -10, -10]} intensity={1.5} color="#00ffff" />
       <pointLight position={[0, 0, 8]} intensity={1} color="#39ff14" />
 
-      <GiantTorusKnot color="#ff00ff" />
+      <GiantTorusKnot color="#ff00ff" scrollY={scrollY} />
       <GiantIcosahedron color="#00ffff" />
       <GiantOctahedron color="#39ff14" />
       <GiantTorus color="#ffff00" />
+      <MorphingOrb />
     </>
   );
 }

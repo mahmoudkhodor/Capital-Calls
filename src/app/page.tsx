@@ -8,13 +8,14 @@ import Logo from '@/components/Logo';
 import PsychedelicBackground from '@/components/landing/PsychedelicBackground';
 import FloatingShapes from '@/components/landing/FloatingShapes';
 import ScrollReveal from '@/components/landing/ScrollReveal';
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform, useMotionValue, useSpring, useInView } from 'framer-motion';
 
 function CustomCursor() {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
+  const [trail, setTrail] = useState<Array<{x: number, y: number}>>([]);
 
   const springConfig = { damping: 25, stiffness: 700 };
   const cursorX = useSpring(mouseX, springConfig);
@@ -25,6 +26,11 @@ function CustomCursor() {
       mouseX.set(e.clientX - 16);
       mouseY.set(e.clientY - 16);
       setIsVisible(true);
+
+      setTrail(prev => {
+        const newTrail = [...prev, { x: e.clientX, y: e.clientY }];
+        return newTrail.slice(-10);
+      });
     };
 
     const handleMouseOver = (e: MouseEvent) => {
@@ -47,33 +53,123 @@ function CustomCursor() {
   if (!isVisible) return null;
 
   return (
-    <motion.div
-      className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-[9999] mix-blend-difference"
-      style={{
-        x: cursorX,
-        y: cursorY,
-        backgroundColor: isHovering ? '#ff00ff' : '#00ffff',
-        scale: isHovering ? 2 : 1,
-      }}
-    />
+    <>
+      {trail.map((pos, i) => (
+        <motion.div
+          key={i}
+          className="fixed top-0 left-0 w-2 h-2 rounded-full pointer-events-none z-[9998]"
+          style={{
+            x: pos.x - 4,
+            y: pos.y - 4,
+            backgroundColor: `rgba(${isHovering ? '255, 0, 255' : '0, 255, 255'}, ${i / 20})`,
+            scale: (i + 1) / 10,
+          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: i / 10 }}
+          exit={{ opacity: 0 }}
+        />
+      ))}
+      <motion.div
+        className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-[9999] mix-blend-difference"
+        style={{
+          x: cursorX,
+          y: cursorY,
+          backgroundColor: isHovering ? '#ff00ff' : '#00ffff',
+          scale: isHovering ? 2.5 : 1,
+        }}
+      />
+    </>
   );
 }
 
 function AnimatedGradientBackground() {
   const { scrollYProgress } = useScroll();
-  const rotate = useTransform(scrollYProgress, [0, 1], [0, 360]);
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1.5, 1]);
+  const rotate = useTransform(scrollYProgress, [0, 1], [0, 720]);
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 2, 1]);
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [1, 0.8, 0.8, 1]);
 
   return (
     <motion.div
       className="fixed inset-0 pointer-events-none z-0"
-      style={{ rotate, scale }}
+      style={{ rotate, scale, opacity }}
     >
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-neon-pink/20 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute top-1/2 right-1/4 w-80 h-80 bg-neon-purple/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '0.5s' }} />
-      <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-neon-cyan/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-      <div className="absolute top-2/3 right-1/3 w-64 h-64 bg-neon-green/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }} />
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-neon-pink/30 rounded-full blur-[100px] animate-pulse" />
+      <div className="absolute top-1/2 right-1/4 w-[450px] h-[450px] bg-neon-purple/30 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '0.5s' }} />
+      <div className="absolute bottom-1/4 left-1/3 w-[400px] h-[400px] bg-neon-cyan/30 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
+      <div className="absolute top-2/3 right-1/3 w-[350px] h-[350px] bg-neon-green/30 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1.5s' }} />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-neon-yellow/20 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
     </motion.div>
+  );
+}
+
+function SectionTransition({ color }: { color: string }) {
+  return (
+    <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
+      <div
+        className="absolute bottom-0 left-0 right-0 h-32"
+        style={{
+          background: `linear-gradient(to top, rgba(15, 23, 42, 1) 0%, rgba(15, 23, 42, 0.8) 50%, transparent 100%)`,
+        }}
+      />
+      <motion.div
+        className="absolute inset-0"
+        style={{
+          background: `radial-gradient(circle at 50% 100%, ${color}40 0%, transparent 50%)`,
+        }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      />
+    </div>
+  );
+}
+
+function WarpSpeedOverlay() {
+  const { scrollYProgress } = useScroll();
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 0.3, 0.3, 0]);
+
+  return (
+    <motion.div
+      className="fixed inset-0 pointer-events-none z-30 warp-speed"
+      style={{ opacity }}
+    />
+  );
+}
+
+function GlitchText({ text, className }: { text: string; className?: string }) {
+  return (
+    <div className={`glitch ${className}`} data-text={text}>
+      {text}
+    </div>
+  );
+}
+
+function HolographicCard({ children, color }: { children: React.ReactNode; color: string }) {
+  return (
+    <div className="relative group">
+      <div className="absolute inset-0 bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan rounded-2xl blur-xl opacity-0 group-hover:opacity-70 transition-opacity duration-500" />
+      <div className="relative glass-neon p-8 rounded-2xl hover:scale-105 hover:rotate-1 transition-all duration-500">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function StatCounter({ value, label, color }: { value: string; label: string; color: string }) {
+  const [count, setCount] = useState(0);
+  const ref = useScroll();
+
+  return (
+    <div className="text-center group cursor-default">
+      <motion.div
+        className={`text-5xl md:text-7xl font-bold ${color} mb-2`}
+        whileHover={{ scale: 1.2, rotate: [0, -5, 5, 0] }}
+        transition={{ type: 'spring', stiffness: 300 }}
+      >
+        {value}
+      </motion.div>
+      <div className="text-white/60 text-lg">{label}</div>
+    </div>
   );
 }
 
@@ -81,6 +177,10 @@ export default function Home() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { scrollYProgress } = useScroll();
+
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 1.5]);
+  const heroY = useTransform(scrollYProgress, [0, 0.2], [0, -100]);
 
   useEffect(() => {
     if (status === 'authenticated') {
@@ -95,10 +195,16 @@ export default function Home() {
       <CustomCursor />
       <AnimatedGradientBackground />
       <PsychedelicBackground />
+      <WarpSpeedOverlay />
       <div className="noise-overlay" />
 
       {/* Navigation */}
-      <nav className="relative z-50 border-b border-white/10 backdrop-blur-md bg-dark-950/30">
+      <motion.nav
+        className="relative z-50 border-b border-white/10 backdrop-blur-md bg-dark-950/50"
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
+      >
         <div className="container-custom">
           <div className="flex items-center justify-between h-20">
             <Link href="/" className="flex items-center gap-3 group cursor-pointer">
@@ -108,13 +214,14 @@ export default function Home() {
             <div className="flex items-center gap-4">
               <Link
                 href="/login"
-                className="px-5 py-2 text-white/80 hover:text-white transition-all duration-300 hover:neon-text cursor-pointer"
+                className="px-5 py-2 text-white/80 hover:text-white transition-all duration-300 hover:neon-text cursor-pointer relative overflow-hidden"
               >
-                Sign In
+                <span className="absolute inset-0 bg-neon-purple/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                <span className="relative">Sign In</span>
               </Link>
               <Link
                 href="/apply"
-                className="relative px-6 py-3 text-white font-semibold overflow-hidden rounded-full group cursor-pointer"
+                className="relative px-6 py-3 text-white font-semibold overflow-hidden rounded-full group cursor-pointer btn-glow-pulse"
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan opacity-80 group-hover:opacity-100 transition-opacity" />
                 <span className="absolute inset-0 bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan blur-lg opacity-50 group-hover:opacity-100 transition-opacity" />
@@ -123,30 +230,47 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </nav>
+      </motion.nav>
 
       {/* Hero Section */}
-      <section className="relative z-10 min-h-[90vh] flex items-center justify-center">
-        <FloatingShapes className="opacity-40" />
-        <div className="container-custom text-center">
+      <motion.section
+        className="relative z-10 min-h-screen flex items-center justify-center"
+        style={{ opacity: heroOpacity, scale: heroScale, y: heroY }}
+      >
+        <FloatingShapes className="opacity-60" />
+        <div className="container-custom text-center cosmic-dust">
           <ScrollReveal>
-            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-10 cursor-default">
+            <motion.div
+              className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-10 cursor-default holographic"
+              whileHover={{ scale: 1.05 }}
+            >
               <span className="w-2 h-2 rounded-full bg-neon-green animate-pulse" />
               <span className="text-white/80">The future of startup fundraising</span>
-            </div>
+            </motion.div>
           </ScrollReveal>
 
           <ScrollReveal delay={0.1}>
             <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold text-white mb-8 tracking-tight leading-tight cursor-default">
-              <span className="block animate-float bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan bg-clip-text text-transparent">
+              <motion.span
+                className="block animate-float bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan bg-clip-text text-transparent"
+                whileHover={{ scale: 1.1 }}
+              >
                 Where
-              </span>
-              <span className="block animate-float bg-gradient-to-r from-neon-cyan via-neon-green to-neon-yellow bg-clip-text text-transparent" style={{ animationDelay: '0.5s' }}>
+              </motion.span>
+              <motion.span
+                className="block animate-float bg-gradient-to-r from-neon-cyan via-neon-green to-neon-yellow bg-clip-text text-transparent"
+                style={{ animationDelay: '0.5s' }}
+                whileHover={{ scale: 1.1 }}
+              >
                 Visionary
-              </span>
-              <span className="block animate-float bg-gradient-to-r from-neon-yellow via-neon-orange to-neon-pink bg-clip-text text-transparent" style={{ animationDelay: '1s' }}>
+              </motion.span>
+              <motion.span
+                className="block animate-float bg-gradient-to-r from-neon-yellow via-neon-orange to-neon-pink bg-clip-text text-transparent"
+                style={{ animationDelay: '1s' }}
+                whileHover={{ scale: 1.1 }}
+              >
                 Founders
-              </span>
+              </motion.span>
               <span className="block mt-4 text-4xl md:text-6xl">
                 Meet Their <span className="neon-text text-neon-purple">Investors</span>
               </span>
@@ -166,28 +290,46 @@ export default function Home() {
                 href="/apply"
                 className="pointer-events-auto group relative px-10 py-5 text-lg font-bold text-white overflow-hidden rounded-full cursor-pointer"
               >
-                <span className="absolute inset-0 bg-gradient-to-r from-neon-pink to-neon-purple" />
+                <span className="absolute inset-0 bg-gradient-to-r from-neon-pink to-neon-purple animate-gradient-xy" />
                 <span className="absolute inset-0 bg-gradient-to-r from-neon-pink to-neon-purple blur-lg opacity-70 group-hover:opacity-100 transition-opacity" />
                 <span className="absolute inset-0 bg-gradient-to-r from-neon-purple to-neon-cyan opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <span className="relative">Apply as Startup</span>
               </Link>
               <Link
                 href="/login"
-                className="pointer-events-auto px-10 py-5 text-lg font-medium text-white border border-white/20 rounded-full hover:border-neon-cyan hover:text-neon-cyan hover:neon-text transition-all duration-300 backdrop-blur-sm cursor-pointer"
+                className="pointer-events-auto px-10 py-5 text-lg font-medium text-white border border-white/20 rounded-full hover:border-neon-cyan hover:text-neon-cyan hover:neon-text transition-all duration-300 backdrop-blur-sm cursor-pointer group"
               >
-                Investor Login
+                <span className="absolute inset-0 rounded-full bg-neon-cyan/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                <span className="relative">Investor Login</span>
               </Link>
             </div>
           </ScrollReveal>
+
+          {/* Scroll indicator */}
+          <motion.div
+            className="absolute bottom-10 left-1/2 -translate-x-1/2"
+            animate={{ y: [0, 10, 0] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+          >
+            <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2">
+              <motion.div
+                className="w-1 h-2 bg-white/60 rounded-full"
+                animate={{ opacity: [1, 0, 1], y: [0, 8, 0] }}
+                transition={{ repeat: Infinity, duration: 2 }}
+              />
+            </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
+
+      <SectionTransition color="#ff00ff" />
 
       {/* Features Section */}
-      <section className="relative z-10 py-32">
+      <section className="relative z-10 py-40 section-transition">
         <div className="container-custom">
           <ScrollReveal>
             <h2 className="text-4xl md:text-6xl font-bold text-white text-center mb-20 cursor-default">
-              Everything You <span className="neon-text text-neon-pink">Need</span>
+              Everything You <span className="neon-text text-neon-pink glitch" data-text="Need">Need</span>
             </h2>
           </ScrollReveal>
 
@@ -213,63 +355,80 @@ export default function Home() {
               },
             ].map((feature, i) => (
               <ScrollReveal key={i} delay={i * 0.15} direction={i % 2 === 0 ? 'left' : 'right'}>
-                <div className="group glass-neon p-8 rounded-2xl hover:scale-110 hover:rotate-1 transition-all duration-500 cursor-pointer">
+                <HolographicCard color={feature.color}>
                   <div className="relative mb-6">
                     <div className={`absolute inset-0 bg-${feature.color}/30 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                    <div className={`relative w-16 h-16 rounded-xl bg-${feature.color}/20 flex items-center justify-center text-3xl group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500`}>
+                    <motion.div
+                      className={`relative w-16 h-16 rounded-xl bg-${feature.color}/20 flex items-center justify-center text-3xl`}
+                      whileHover={{ scale: 1.1, rotate: 12 }}
+                      transition={{ type: 'spring', stiffness: 300 }}
+                    >
                       {feature.icon}
-                    </div>
+                    </motion.div>
                   </div>
-                  <h3 className={`text-2xl font-semibold text-${feature.color} mb-4 group-hover:neon-text transition-all duration-300`}>
+                  <h3 className={`text-2xl font-semibold ${feature.color} mb-4 group-hover:neon-text transition-all duration-300`}>
                     {feature.title}
                   </h3>
                   <p className="text-white/60 leading-relaxed">
                     {feature.description}
                   </p>
-                </div>
+                </HolographicCard>
               </ScrollReveal>
             ))}
           </div>
         </div>
       </section>
+
+      <SectionTransition color="#00ffff" />
 
       {/* Stats Section */}
-      <section className="relative z-10 py-32">
+      <section className="relative z-10 py-40">
         <div className="container-custom">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <ScrollReveal>
+            <h2 className="text-4xl md:text-6xl font-bold text-white text-center mb-20 cursor-default">
+              By The <span className="neon-text text-neon-cyan">Numbers</span>
+            </h2>
+          </ScrollReveal>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
             {[
-              { value: '$2B+', label: 'Capital Deployed', color: 'neon-pink' },
-              { value: '500+', label: 'Startups Funded', color: 'neon-purple' },
-              { value: '200+', label: 'Active Investors', color: 'neon-cyan' },
-              { value: '95%', label: 'Match Rate', color: 'neon-green' },
+              { value: '$2B+', label: 'Capital Deployed', color: 'text-neon-pink' },
+              { value: '500+', label: 'Startups Funded', color: 'text-neon-purple' },
+              { value: '200+', label: 'Active Investors', color: 'text-neon-cyan' },
+              { value: '95%', label: 'Match Rate', color: 'text-neon-green' },
             ].map((stat, i) => (
               <ScrollReveal key={i} delay={i * 0.1}>
-                <div className="text-center group cursor-default">
-                  <motion.div
-                    className={`text-5xl md:text-7xl font-bold text-${stat.color} mb-2`}
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ type: 'spring', stiffness: 300 }}
-                  >
-                    {stat.value}
-                  </motion.div>
-                  <div className="text-white/60 text-lg">{stat.label}</div>
-                </div>
+                <StatCounter {...stat} />
               </ScrollReveal>
             ))}
           </div>
         </div>
       </section>
 
+      <SectionTransition color="#39ff14" />
+
       {/* CTA Section */}
-      <section className="relative z-10 py-32">
+      <section className="relative z-10 py-40 section-transition">
         <div className="container-custom">
           <ScrollReveal>
-            <div className="relative p-12 md:p-20 text-center rounded-3xl overflow-hidden">
+            <motion.div
+              className="relative p-12 md:p-20 text-center rounded-3xl overflow-hidden"
+              whileHover={{ scale: 1.02 }}
+              transition={{ type: 'spring', stiffness: 300 }}
+            >
               <div className="absolute inset-0 bg-gradient-to-r from-neon-pink/20 via-neon-purple/20 to-neon-cyan/20 animate-pulse-slow" />
-              <div className="absolute inset-0 bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan opacity-0 hover:opacity-20 transition-opacity duration-500" />
 
-              <div className="absolute inset-0 rounded-3xl animate-morph">
-                <div className="absolute inset-0 rounded-3xl border-2 border-neon-pink/50 animate-pulse" />
+              {/* Animated border */}
+              <div className="absolute inset-0 rounded-3xl overflow-hidden">
+                <div className="absolute inset-0 border-2 border-transparent">
+                  <div className="absolute inset-0 bg-gradient-to-r from-neon-pink via-neon-cyan to-neon-green animate-gradient-xy opacity-50" style={{ padding: '2px' }}>
+                    <div className="w-full h-full bg-dark-950 rounded-3xl" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="absolute inset-0 animate-morph">
+                <div className="absolute inset-0 rounded-3xl border-2 border-neon-pink/30 animate-pulse" />
               </div>
 
               <div className="relative z-10">
@@ -281,7 +440,7 @@ export default function Home() {
                 </p>
                 <Link
                   href="/apply"
-                  className="group relative px-12 py-6 text-xl font-bold text-white overflow-hidden rounded-full cursor-pointer"
+                  className="group relative px-12 py-6 text-xl font-bold text-white overflow-hidden rounded-full cursor-pointer inline-block btn-glow-pulse"
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-neon-green to-neon-cyan" />
                   <span className="absolute inset-0 bg-gradient-to-r from-neon-green to-neon-cyan blur-lg opacity-70 group-hover:opacity-100 transition-opacity" />
@@ -289,13 +448,13 @@ export default function Home() {
                   <span className="relative">Apply as Startup</span>
                 </Link>
               </div>
-            </div>
+            </motion.div>
           </ScrollReveal>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 py-12 border-t border-white/10">
+      <footer className="relative z-10 py-12 border-t border-white/10 bg-dark-950/80">
         <div className="container-custom">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-3">

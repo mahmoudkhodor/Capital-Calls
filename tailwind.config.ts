@@ -69,6 +69,7 @@ const config: Config = {
         'spin-slow': 'spin 8s linear infinite',
         'morph': 'morph 8s ease-in-out infinite',
         'wave': 'wave 2s ease-in-out infinite',
+        'gradient-xy': 'gradientXY 3s ease infinite',
       },
       keyframes: {
         fadeIn: {
@@ -96,6 +97,10 @@ const config: Config = {
           '25%': { transform: 'scale(1.1) rotate(5deg)' },
           '50%': { transform: 'scale(1) rotate(0deg)' },
           '75%': { transform: 'scale(0.9) rotate(-5deg)' },
+        },
+        gradientXY: {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
         },
       },
     },

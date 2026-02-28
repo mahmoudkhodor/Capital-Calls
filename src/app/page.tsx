@@ -13,16 +13,13 @@ import HoneycombGrid from '@/components/grid/HoneycombGrid';
 import InteractiveGlobe from '@/components/effects/InteractiveGlobe';
 import InfinityLoop from '@/components/effects/InfinityLoop';
 import { GradientText, Spotlight, GrainOverlay } from '@/components/gradients/GradientBackground';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useMotionValue } from 'framer-motion';
 
 function CustomCursor() {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-
-  const cursorX = useMotionValue(0);
-  const cursorY = useMotionValue(0);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -53,9 +50,11 @@ function CustomCursor() {
   return (
     <motion.div
       className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-[9999] mix-blend-difference"
-      animate={{
+      style={{
         x: mouseX,
         y: mouseY,
+      }}
+      animate={{
         scale: isHovering ? 2.5 : 1,
         backgroundColor: isHovering ? '#ff00ff' : '#00ffff',
       }}
@@ -63,8 +62,6 @@ function CustomCursor() {
     />
   );
 }
-
-import { useMotionValue } from 'framer-motion';
 
 function AnimatedBackground() {
   const { scrollYProgress } = useScroll();

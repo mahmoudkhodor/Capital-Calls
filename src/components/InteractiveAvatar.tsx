@@ -18,7 +18,7 @@ export default function InteractiveAvatar({
   const avatarRef = useRef<SVGSVGElement>(null);
   const [pupilPosition, setPupilPosition] = useState({ x: 0, y: 0 });
   const [isPeeking, setIsPeeking] = useState(false);
-  const [isBlushing, setIsBlushing] = useState(false);
+  const [handOffset, setHandOffset] = useState(50);
 
   // Calculate pupil position based on cursor
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function InteractiveAvatar({
       const deltaX = (e.clientX - centerX) / (avatarRect.width / 2);
       const deltaY = (e.clientY - centerY) / (avatarRect.height / 2);
 
-      const maxOffset = 6;
+      const maxOffset = 5;
       const clampedX = Math.max(-maxOffset, Math.min(maxOffset, deltaX * maxOffset));
       const clampedY = Math.max(-maxOffset, Math.min(maxOffset, deltaY * maxOffset));
 
@@ -48,12 +48,24 @@ export default function InteractiveAvatar({
     };
   }, [usernameFocused]);
 
-  // Determine avatar state
+  // Animate hand offset for smooth covering/uncovering
+  useEffect(() => {
+    if (passwordFocused && !isPeeking) {
+      const timer = setTimeout(() => setHandOffset(0), 50);
+      return () => clearTimeout(timer);
+    } else if (isPeeking) {
+      const timer = setTimeout(() => setHandOffset(18), 50);
+      return () => clearTimeout(timer);
+    } else {
+      const timer = setTimeout(() => setHandOffset(50), 50);
+      return () => clearTimeout(timer);
+    }
+  }, [passwordFocused, isPeeking]);
+
+  // Determine peek state
   useEffect(() => {
     if (passwordFocused && showPassword && hasPassword) {
       setIsPeeking(true);
-    } else if (passwordFocused) {
-      setIsPeeking(false);
     } else {
       setIsPeeking(false);
     }
@@ -64,28 +76,19 @@ export default function InteractiveAvatar({
     if (!usernameFocused) {
       setPupilPosition({ x: 0, y: 0 });
     }
-    setIsBlushing(usernameFocused);
   }, [usernameFocused]);
 
   return (
     <svg
       ref={avatarRef}
       viewBox="0 0 200 220"
-      className="w-44 h-48 mx-auto mb-6"
-      style={{ filter: 'drop-shadow(0 0 20px rgba(99, 102, 241, 0.4))' }}
+      className="w-40 h-44 mx-auto mb-6"
+      style={{ filter: 'drop-shadow(0 0 25px rgba(99, 102, 241, 0.5))' }}
     >
       <defs>
-        {/* Futuristic gradient */}
-        <linearGradient id="faceGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <linearGradient id="aiFace" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#1e1b4b" />
-          <stop offset="50%" stopColor="#312e81" />
-          <stop offset="100%" stopColor="#1e1b4b" />
-        </linearGradient>
-
-        <linearGradient id="screenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#4f46e5" />
-          <stop offset="50%" stopColor="#818cf8" />
-          <stop offset="100%" stopColor="#4f46e5" />
+          <stop offset="100%" stopColor="#312e81" />
         </linearGradient>
 
         <linearGradient id="eyeGlow" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -93,7 +96,12 @@ export default function InteractiveAvatar({
           <stop offset="100%" stopColor="#6366f1" />
         </linearGradient>
 
-        <filter id="glow">
+        <linearGradient id="skinGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#4c1d95" />
+          <stop offset="100%" stopColor="#2e1065" />
+        </linearGradient>
+
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
           <feMerge>
             <feMergeNode in="coloredBlur"/>
@@ -101,151 +109,120 @@ export default function InteractiveAvatar({
           </feMerge>
         </filter>
 
-        <linearGradient id="handGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#1e1b4b" />
-          <stop offset="100%" stopColor="#312e81" />
-        </linearGradient>
+        <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
       </defs>
 
       {/* Antenna */}
-      <line x1="100" y1="30" x2="100" y2="50" stroke="#6366f1" strokeWidth="2" />
-      <circle cx="100" cy="25" r="6" fill="#818cf8" filter="url(#glow)">
-        <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite" />
+      <line x1="100" y1="25" x2="100" y2="50" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="100" cy="20" r="5" fill="#a78bfa" filter="url(#glow)">
+        <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite" />
       </circle>
 
-      {/* Head - futuristic AI shape */}
-      <rect x="35" y="50" width="130" height="130" rx="25" fill="url(#faceGradient)" stroke="#6366f1" strokeWidth="2" />
+      {/* Head */}
+      <rect x="40" y="45" width="120" height="120" rx="30" fill="url(#aiFace)" stroke="#6366f1" strokeWidth="2" />
 
-      {/* Screen/Face plate */}
-      <rect x="45" y="70" width="110" height="90" rx="15" fill="url(#screenGradient)" opacity="0.3" />
+      {/* Face screen */}
+      <rect x="50" y="60" width="100" height="80" rx="20" fill="#1e1b4b" stroke="#4c1d95" strokeWidth="1" />
 
-      {/* Left Eye Ring */}
-      <circle cx="70" cy="95" r="20" fill="none" stroke="#818cf8" strokeWidth="2" opacity="0.8" />
+      {/* Left Eye */}
+      <ellipse cx="70" cy="90" rx="16" ry="18" fill="#0f0f1a" stroke="#6366f1" strokeWidth="1" />
+      <ellipse cx="70" cy="90" rx="14" ry="16" fill="#1a1a2e" />
+      <circle cx={70 + pupilPosition.x} cy={90 + pupilPosition.y} r="7" fill="url(#eyeGlow)" filter="url(#glow)" />
+      <circle cx={66 + pupilPosition.x} cy={85 + pupilPosition.y} r="2.5" fill="white" opacity="0.9" />
 
-      {/* Left Pupil - moves with cursor */}
-      <circle
-        cx={70 + pupilPosition.x}
-        cy={95 + pupilPosition.y}
-        r="8"
-        fill="url(#eyeGlow)"
-        filter="url(#glow)"
-      />
+      {/* Right Eye */}
+      <ellipse cx="130" cy="90" rx="16" ry="18" fill="#0f0f1a" stroke="#6366f1" strokeWidth="1" />
+      <ellipse cx="130" cy="90" rx="14" ry="16" fill="#1a1a2e" />
+      <circle cx={130 + pupilPosition.x} cy={90 + pupilPosition.y} r="7" fill="url(#eyeGlow)" filter="url(#glow)" />
+      <circle cx={126 + pupilPosition.x} cy={85 + pupilPosition.y} r="2.5" fill="white" opacity="0.9" />
 
-      {/* Left Eye highlight */}
-      <circle
-        cx={66 + pupilPosition.x}
-        cy={90 + pupilPosition.y}
-        r="3"
-        fill="white"
-        opacity="0.8"
-      />
+      {/* Hands covering eyes - animated smoothly */}
+      <g className="transition-transform duration-500 ease-out" style={{ transform: `translateY(${handOffset}px)` }}>
+        {/* Left Hand */}
+        <g>
+          <ellipse cx="55" cy="75" rx="18" ry="22" fill="url(#skinGradient)" stroke="#6366f1" strokeWidth="1" />
+          <rect x="35" y="45" width="8" height="25" rx="4" fill="url(#skinGradient)" stroke="#6366f1" strokeWidth="1" transform="rotate(-20 39 57)" />
+          <rect x="45" y="38" width="8" height="30" rx="4" fill="url(#skinGradient)" stroke="#6366f1" strokeWidth="1" transform="rotate(-8 49 53)" />
+          <rect x="55" y="35" width="8" height="32" rx="4" fill="url(#skinGradient)" stroke="#6366f1" strokeWidth="1" />
+          <rect x="65" y="40" width="8" height="28" rx="4" fill="url(#skinGradient)" stroke="#6366f1" strokeWidth="1" transform="rotate(10 69 54)" />
+          <rect x="73" y="50" width="8" height="22" rx="4" fill="url(#skinGradient)" stroke="#6366f1" strokeWidth="1" transform="rotate(20 77 61)" />
+        </g>
 
-      {/* Right Eye Ring */}
-      <circle cx="130" cy="95" r="20" fill="none" stroke="#818cf8" strokeWidth="2" opacity="0.8" />
-
-      {/* Right Pupil - moves with cursor */}
-      <circle
-        cx={130 + pupilPosition.x}
-        cy={95 + pupilPosition.y}
-        r="8"
-        fill="url(#eyeGlow)"
-        filter="url(#glow)"
-      />
-
-      {/* Right Eye highlight */}
-      <circle
-        cx={126 + pupilPosition.x}
-        cy={90 + pupilPosition.y}
-        r="3"
-        fill="white"
-        opacity="0.8"
-      />
-
-      {/* Hands - cover eyes when password focused (not peeking) */}
-      <g
-        className="transition-all duration-500 ease-out"
-        style={{
-          transform: passwordFocused && !isPeeking ? 'translateY(0)' : 'translateY(50px)',
-          opacity: passwordFocused && !isPeeking ? 1 : 0,
-        }}
-      >
-        {/* Left Hand - robotic fingers */}
-        <rect x="45" y="75" width="25" height="40" rx="8" fill="url(#handGradient)" stroke="#6366f1" strokeWidth="1.5" />
-        <rect x="47" y="60" width="6" height="20" rx="3" fill="url(#handGradient)" stroke="#6366f1" strokeWidth="1" />
-        <rect x="55" y="55" width="6" height="25" rx="3" fill="url(#handGradient)" stroke="#6366f1" strokeWidth="1" />
-        <rect x="63" y="60" width="6" height="20" rx="3" fill="url(#handGradient)" stroke="#6366f1" strokeWidth="1" />
-
-        {/* Right Hand - robotic fingers */}
-        <rect x="130" y="75" width="25" height="40" rx="8" fill="url(#handGradient)" stroke="#6366f1" strokeWidth="1.5" />
-        <rect x="132" y="60" width="6" height="20" rx="3" fill="url(#handGradient)" stroke="#6366f1" strokeWidth="1" />
-        <rect x="140" y="55" width="6" height="25" rx="3" fill="url(#handGradient)" stroke="#6366f1" strokeWidth="1" />
-        <rect x="148" y="60" width="6" height="20" rx="3" fill="url(#handGradient)" stroke="#6366f1" strokeWidth="1" />
+        {/* Right Hand */}
+        <g>
+          <ellipse cx="145" cy="75" rx="18" ry="22" fill="url(#skinGradient)" stroke="#6366f1" strokeWidth="1" />
+          <rect x="125" y="45" width="8" height="25" rx="4" fill="url(#skinGradient)" stroke="#6366f1" strokeWidth="1" transform="rotate(20 129 57)" />
+          <rect x="135" y="38" width="8" height="30" rx="4" fill="url(#skinGradient)" stroke="#6366f1" strokeWidth="1" transform="rotate(8 139 53)" />
+          <rect x="145" y="35" width="8" height="32" rx="4" fill="url(#skinGradient)" stroke="#6366f1" strokeWidth="1" />
+          <rect x="155" y="40" width="8" height="28" rx="4" fill="url(#skinGradient)" stroke="#6366f1" strokeWidth="1" transform="rotate(-10 159 54)" />
+          <rect x="163" y="50" width="8" height="22" rx="4" fill="url(#skinGradient)" stroke="#6366f1" strokeWidth="1" transform="rotate(-20 167 61)" />
+        </g>
       </g>
 
-      {/* Peeking Hands - show when show password is enabled */}
-      <g
-        className="transition-all duration-500 ease-out"
-        style={{
-          transform: isPeeking ? 'translateY(15px)' : 'translateY(70px)',
-          opacity: isPeeking ? 1 : 0,
-        }}
-      >
-        {/* Left Peeking Hand */}
-        <rect x="50" y="82" width="20" height="32" rx="6" fill="url(#handGradient)" stroke="#6366f1" strokeWidth="1.5" />
-        <rect x="52" y="70" width="5" height="15" rx="2" fill="url(#handGradient)" stroke="#6366f1" strokeWidth="1" />
-        <rect x="58" y="66" width="5" height="19" rx="2" fill="url(#handGradient)" stroke="#6366f1" strokeWidth="1" />
+      {/* Peeking eyes - only visible when peeking */}
+      <g style={{ opacity: isPeeking ? 1 : 0, transition: 'opacity 0.3s ease' }}>
+        {/* Small eyes peeking through fingers - left */}
+        <ellipse cx="65" cy="95" rx="5" ry="6" fill="#1a1a2e" />
+        <circle cx="65" cy="95" r="4" fill="url(#eyeGlow)" filter="url(#softGlow)" />
+        <circle cx="64" cy="93" r="1.5" fill="white" />
 
-        {/* Right Peeking Hand */}
-        <rect x="130" y="82" width="20" height="32" rx="6" fill="url(#handGradient)" stroke="#6366f1" strokeWidth="1.5" />
-        <rect x="132" y="70" width="5" height="15" rx="2" fill="url(#handGradient)" stroke="#6366f1" strokeWidth="1" />
-        <rect x="138" y="66" width="5" height="19" rx="2" fill="url(#handGradient)" stroke="#6366f1" strokeWidth="1" />
+        <ellipse cx="78" cy="95" rx="5" ry="6" fill="#1a1a2e" />
+        <circle cx="78" cy="95" r="4" fill="url(#eyeGlow)" filter="url(#softGlow)" />
+        <circle cx="77" cy="93" r="1.5" fill="white" />
 
-        {/* Small peeking eyes */}
-        <circle cx="70" cy="100" r="5" fill="url(#eyeGlow)" filter="url(#glow)" />
-        <circle cx="130" cy="100" r="5" fill="url(#eyeGlow)" filter="url(#glow)" />
+        {/* Small eyes peeking through fingers - right */}
+        <ellipse cx="122" cy="95" rx="5" ry="6" fill="#1a1a2e" />
+        <circle cx="122" cy="95" r="4" fill="url(#eyeGlow)" filter="url(#softGlow)" />
+        <circle cx="121" cy="93" r="1.5" fill="white" />
+
+        <ellipse cx="135" cy="95" rx="5" ry="6" fill="#1a1a2e" />
+        <circle cx="135" cy="95" r="4" fill="url(#eyeGlow)" filter="url(#softGlow)" />
+        <circle cx="134" cy="93" r="1.5" fill="white" />
       </g>
 
-      {/* Mouth - varies by state */}
+      {/* Mouth */}
       {passwordFocused && !isPeeking ? (
-        // Worried - flat line
-        <line x1="85" y1="145" x2="115" y2="145" stroke="#818cf8" strokeWidth="3" strokeLinecap="round" />
+        <path d="M 85 145 Q 100 140 115 145" stroke="#818cf8" strokeWidth="2.5" strokeLinecap="round" fill="none" />
       ) : isPeeking ? (
-        // Smirk when peeking - slight smile
-        <path d="M 80 142 Q 100 150 120 142" stroke="#818cf8" strokeWidth="3" strokeLinecap="round" fill="none" />
+        <path d="M 82 143 Q 100 150 118 143" stroke="#818cf8" strokeWidth="2.5" strokeLinecap="round" fill="none" />
       ) : usernameFocused ? (
-        // Big smile when typing
-        <path d="M 75 140 Q 100 160 125 140" stroke="#818cf8" strokeWidth="3" strokeLinecap="round" fill="none" />
+        <path d="M 75 140 Q 100 160 125 140" stroke="#818cf8" strokeWidth="2.5" strokeLinecap="round" fill="none" />
       ) : (
-        // Default - subtle smile
-        <path d="M 85 145 Q 100 150 115 145" stroke="#818cf8" strokeWidth="3" strokeLinecap="round" fill="none" />
+        <path d="M 85 145 Q 100 150 115 145" stroke="#818cf8" strokeWidth="2.5" strokeLinecap="round" fill="none" />
       )}
 
-      {/* Cheeks - blush effect */}
-      <ellipse cx="55" cy="125" rx="8" ry="5" fill="#c084fc" opacity={isBlushing ? 0.4 : 0.15}>
-        <animate attributeName="opacity" values={isBlushing ? "0.4;0.6;0.4" : "0.15"} dur="1s" repeatCount="indefinite" />
+      {/* Blush when typing */}
+      <ellipse cx="55" cy="120" rx="10" ry="6" fill="#c084fc" opacity={usernameFocused ? 0.5 : 0.2}>
+        <animate attributeName="opacity" values={usernameFocused ? "0.5;0.7;0.5" : "0.2"} dur="1.5s" repeatCount="indefinite" />
       </ellipse>
-      <ellipse cx="145" cy="125" rx="8" ry="5" fill="#c084fc" opacity={isBlushing ? 0.4 : 0.15}>
-        <animate attributeName="opacity" values={isBlushing ? "0.4;0.6;0.4" : "0.15"} dur="1s" repeatCount="indefinite" />
+      <ellipse cx="145" cy="120" rx="10" ry="6" fill="#c084fc" opacity={usernameFocused ? 0.5 : 0.2}>
+        <animate attributeName="opacity" values={usernameFocused ? "0.5;0.7;0.5" : "0.2"} dur="1.5s" repeatCount="indefinite" />
       </ellipse>
 
-      {/* Ears/Antennae sides */}
-      <rect x="25" y="90" width="10" height="40" rx="5" fill="#1e1b4b" stroke="#6366f1" strokeWidth="1.5" />
-      <rect x="165" y="90" width="10" height="40" rx="5" fill="#1e1b4b" stroke="#6366f1" strokeWidth="1.5" />
+      {/* Side ear pieces */}
+      <rect x="28" y="85" width="12" height="50" rx="6" fill="#1e1b4b" stroke="#6366f1" strokeWidth="1.5" />
+      <rect x="160" y="85" width="12" height="50" rx="6" fill="#1e1b4b" stroke="#6366f1" strokeWidth="1.5" />
 
       {/* Ear lights */}
-      <circle cx="30" cy="100" r="3" fill="#818cf8" filter="url(#glow)">
-        <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite" />
+      <circle cx="34" cy="95" r="3" fill="#818cf8" filter="url(#glow)">
+        <animate attributeName="opacity" values="0.4;1;0.4" dur="1.5s" repeatCount="indefinite" />
       </circle>
-      <circle cx="170" cy="100" r="3" fill="#818cf8" filter="url(#glow)">
-        <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite" />
+      <circle cx="166" cy="95" r="3" fill="#818cf8" filter="url(#glow)">
+        <animate attributeName="opacity" values="0.4;1;0.4" dur="1.5s" repeatCount="indefinite" />
       </circle>
 
       {/* Neck */}
-      <rect x="85" y="175" width="30" height="25" rx="5" fill="#1e1b4b" stroke="#6366f1" strokeWidth="1.5" />
+      <rect x="82" y="160" width="36" height="30" rx="8" fill="#1e1b4b" stroke="#6366f1" strokeWidth="1.5" />
 
-      {/* Collar lights */}
-      <circle cx="92" cy="185" r="3" fill="#4ade80" filter="url(#glow)" />
-      <circle cx="108" cy="185" r="3" fill="#4ade80" filter="url(#glow)" />
+      {/* Neck lights */}
+      <circle cx="92" cy="172" r="4" fill="#4ade80" filter="url(#glow)" />
+      <circle cx="108" cy="172" r="4" fill="#4ade80" filter="url(#glow)" />
     </svg>
   );
 }

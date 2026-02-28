@@ -8,19 +8,19 @@ interface LogoProps {
 
 export default function Logo({ size = 'md', href = '/' }: LogoProps) {
   const sizeClasses = {
-    sm: 'w-16 h-8',
-    md: 'w-24 h-12',
-    lg: 'w-32 h-16',
-    xl: 'w-64 h-28',
+    sm: 'w-12 h-12',
+    md: 'w-16 h-16',
+    lg: 'w-20 h-20',
+    xl: 'w-40 h-16',
   };
 
   return (
-    <Link href={href} className={`${sizeClasses[size]} relative flex items-center justify-center overflow-hidden`}>
+    <Link href={href} className={`${sizeClasses[size]} relative flex items-center justify-center`}>
       <Image
         src="/logo.jpg"
         alt="Capital Call"
         fill
-        className="object-fill"
+        className="object-contain"
       />
     </Link>
   );

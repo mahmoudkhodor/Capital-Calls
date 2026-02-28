@@ -8,10 +8,10 @@ interface LogoProps {
 
 export default function Logo({ size = 'md', href = '/' }: LogoProps) {
   const sizeClasses = {
-    sm: 'w-14 h-10',
-    md: 'w-20 h-14',
-    lg: 'w-28 h-20',
-    xl: 'w-48 h-32',
+    sm: 'w-16 h-8',
+    md: 'w-24 h-12',
+    lg: 'w-32 h-16',
+    xl: 'w-64 h-28',
   };
 
   return (

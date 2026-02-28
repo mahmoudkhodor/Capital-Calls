@@ -110,10 +110,7 @@ export default function Home() {
         <div className="container-custom">
           <div className="flex items-center justify-between h-20">
             <Link href="/" className="flex items-center gap-3 group cursor-pointer">
-              <div className="relative">
-                <Logo size="xl" />
-                <div className="absolute inset-0 bg-neon-pink/50 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              </div>
+              <Logo size="lg" />
             </Link>
 
             <div className="flex items-center gap-4">

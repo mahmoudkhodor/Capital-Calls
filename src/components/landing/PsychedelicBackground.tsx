@@ -288,6 +288,7 @@ export default function PsychedelicBackground() {
       <Canvas
         camera={{ position: [0, 0, 10], fov: 60 }}
         gl={{ antialias: true, alpha: true }}
+        style={{ pointerEvents: 'none' }}
       >
         <Scene />
       </Canvas>

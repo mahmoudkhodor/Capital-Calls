@@ -189,7 +189,7 @@ interface FloatingShapesProps {
 export default function FloatingShapes({ className = '' }: FloatingShapesProps) {
   return (
     <div className={`absolute inset-0 pointer-events-none ${className}`} style={{ zIndex: 5 }}>
-      <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+      <Canvas camera={{ position: [0, 0, 5], fov: 50 }} style={{ pointerEvents: 'none' }}>
         <Scene />
       </Canvas>
     </div>

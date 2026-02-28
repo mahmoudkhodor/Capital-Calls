@@ -164,7 +164,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
               <Link
                 href="/apply"
-                className="group relative px-10 py-5 text-lg font-bold text-white overflow-hidden rounded-full cursor-pointer"
+                className="pointer-events-auto group relative px-10 py-5 text-lg font-bold text-white overflow-hidden rounded-full cursor-pointer"
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-neon-pink to-neon-purple" />
                 <span className="absolute inset-0 bg-gradient-to-r from-neon-pink to-neon-purple blur-lg opacity-70 group-hover:opacity-100 transition-opacity" />
@@ -173,7 +173,7 @@ export default function Home() {
               </Link>
               <Link
                 href="/login"
-                className="px-10 py-5 text-lg font-medium text-white border border-white/20 rounded-full hover:border-neon-cyan hover:text-neon-cyan hover:neon-text transition-all duration-300 backdrop-blur-sm cursor-pointer"
+                className="pointer-events-auto px-10 py-5 text-lg font-medium text-white border border-white/20 rounded-full hover:border-neon-cyan hover:text-neon-cyan hover:neon-text transition-all duration-300 backdrop-blur-sm cursor-pointer"
               >
                 Investor Login
               </Link>

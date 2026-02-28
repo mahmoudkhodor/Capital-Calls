@@ -15,12 +15,12 @@ export default function Logo({ size = 'md', href = '/' }: LogoProps) {
   };
 
   return (
-    <Link href={href} className={`${sizeClasses[size]} relative flex items-center justify-center`}>
+    <Link href={href} className={`${sizeClasses[size]} relative flex items-center justify-center overflow-hidden`}>
       <Image
         src="/logo.jpg"
         alt="Capital Call"
         fill
-        className="object-contain rounded-lg"
+        className="object-fill"
       />
     </Link>
   );

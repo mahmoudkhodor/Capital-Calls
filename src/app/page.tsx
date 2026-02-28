@@ -111,12 +111,9 @@ export default function Home() {
           <div className="flex items-center justify-between h-20">
             <Link href="/" className="flex items-center gap-3 group cursor-pointer">
               <div className="relative">
-                <Logo size="md" />
+                <Logo size="xl" />
                 <div className="absolute inset-0 bg-neon-pink/50 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </div>
-              <span className="text-xl font-bold text-white group-hover:neon-text transition-all duration-300">
-                Capital Call
-              </span>
             </Link>
 
             <div className="flex items-center gap-4">
@@ -313,8 +310,7 @@ export default function Home() {
         <div className="container-custom">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-3">
-              <Logo size="sm" />
-              <span className="text-white font-medium">Capital Call</span>
+              <Logo size="md" />
             </div>
             <p className="text-white/40 text-sm">
               © 2026 Capital Call. All rights reserved.

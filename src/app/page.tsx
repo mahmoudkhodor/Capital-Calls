@@ -90,14 +90,6 @@ export default function Home() {
     }
   }, [session, status, router]);
 
-  const handleApplyClick = () => {
-    router.push('/apply');
-  };
-
-  const handleLoginClick = () => {
-    router.push('/login');
-  };
-
   return (
     <div className="min-h-screen bg-dark-950 relative overflow-x-hidden">
       <CustomCursor />
@@ -114,20 +106,20 @@ export default function Home() {
             </Link>
 
             <div className="flex items-center gap-4">
-              <button
-                onClick={handleLoginClick}
+              <Link
+                href="/login"
                 className="px-5 py-2 text-white/80 hover:text-white transition-all duration-300 hover:neon-text cursor-pointer"
               >
                 Sign In
-              </button>
-              <button
-                onClick={handleApplyClick}
+              </Link>
+              <Link
+                href="/apply"
                 className="relative px-6 py-3 text-white font-semibold overflow-hidden rounded-full group cursor-pointer"
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan opacity-80 group-hover:opacity-100 transition-opacity" />
                 <span className="absolute inset-0 bg-gradient-to-r from-neon-pink via-neon-purple to-neon-cyan blur-lg opacity-50 group-hover:opacity-100 transition-opacity" />
                 <span className="relative">Apply Now</span>
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -170,21 +162,21 @@ export default function Home() {
 
           <ScrollReveal delay={0.3}>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-              <button
-                onClick={handleApplyClick}
+              <Link
+                href="/apply"
                 className="group relative px-10 py-5 text-lg font-bold text-white overflow-hidden rounded-full cursor-pointer"
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-neon-pink to-neon-purple" />
                 <span className="absolute inset-0 bg-gradient-to-r from-neon-pink to-neon-purple blur-lg opacity-70 group-hover:opacity-100 transition-opacity" />
                 <span className="absolute inset-0 bg-gradient-to-r from-neon-purple to-neon-cyan opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <span className="relative">Apply as Startup</span>
-              </button>
-              <button
-                onClick={handleLoginClick}
+              </Link>
+              <Link
+                href="/login"
                 className="px-10 py-5 text-lg font-medium text-white border border-white/20 rounded-full hover:border-neon-cyan hover:text-neon-cyan hover:neon-text transition-all duration-300 backdrop-blur-sm cursor-pointer"
               >
                 Investor Login
-              </button>
+              </Link>
             </div>
           </ScrollReveal>
         </div>
@@ -287,15 +279,15 @@ export default function Home() {
                 <p className="text-xl text-white/60 max-w-2xl mx-auto mb-10 cursor-default">
                   Join hundreds of startups and investors already using Capital Call to close their next big deal.
                 </p>
-                <button
-                  onClick={handleApplyClick}
+                <Link
+                  href="/apply"
                   className="group relative px-12 py-6 text-xl font-bold text-white overflow-hidden rounded-full cursor-pointer"
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-neon-green to-neon-cyan" />
                   <span className="absolute inset-0 bg-gradient-to-r from-neon-green to-neon-cyan blur-lg opacity-70 group-hover:opacity-100 transition-opacity" />
                   <span className="absolute inset-0 bg-gradient-to-r from-neon-cyan to-neon-pink opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <span className="relative">Apply as Startup</span>
-                </button>
+                </Link>
               </div>
             </div>
           </ScrollReveal>
